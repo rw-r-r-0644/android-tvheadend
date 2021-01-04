@@ -18,7 +18,7 @@ package ie.macinnes.tvheadend.player;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.exoplayer2.C;
