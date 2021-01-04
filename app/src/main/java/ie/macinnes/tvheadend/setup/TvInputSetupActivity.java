@@ -25,10 +25,11 @@ import android.media.tv.TvInputInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v17.leanback.app.GuidedStepFragment;
+import android.support.v17.leanback.app.GuidedStepSupportFragment;
 import android.support.v17.leanback.widget.GuidanceStylist;
 import android.support.v17.leanback.widget.GuidedAction;
 import android.support.v17.leanback.widget.GuidedActionsStylist;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -46,19 +47,19 @@ import ie.macinnes.tvheadend.settings.SettingsActivity;
 import ie.macinnes.tvheadend.sync.EpgSyncService;
 import ie.macinnes.tvheadend.sync.EpgSyncTask;
 
-public class TvInputSetupActivity extends Activity {
+public class TvInputSetupActivity extends FragmentActivity {
     private static final String TAG = TvInputSetupActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GuidedStepFragment fragment = new IntroFragment();
+        GuidedStepSupportFragment fragment = new IntroFragment();
         fragment.setArguments(getIntent().getExtras());
-        GuidedStepFragment.addAsRoot(this, fragment, android.R.id.content);
+        GuidedStepSupportFragment.addAsRoot(this, fragment, android.R.id.content);
     }
 
-    public static abstract class BaseGuidedStepFragment extends GuidedStepFragment {
+    public static abstract class BaseGuidedStepFragment extends GuidedStepSupportFragment {
         AccountManager mAccountManager;
 
         static Account sAccount;
@@ -141,7 +142,7 @@ public class TvInputSetupActivity extends Activity {
         @Override
         public void onGuidedActionClicked(GuidedAction action) {
             // Move onto the next step
-            GuidedStepFragment fragment = new AccountSelectorFragment();
+            GuidedStepSupportFragment fragment = new AccountSelectorFragment();
             fragment.setArguments(getArguments());
             add(getFragmentManager(), fragment);
         }
@@ -257,7 +258,7 @@ public class TvInputSetupActivity extends Activity {
         public void onGuidedActionClicked(GuidedAction action) {
             if (ACTION_ID_CONFIRM == action.getId()) {
                 // Move onto the next step
-                GuidedStepFragment fragment = new SyncingFragment();
+                GuidedStepSupportFragment fragment = new SyncingFragment();
                 fragment.setArguments(getArguments());
                 add(getFragmentManager(), fragment);
             }
@@ -278,7 +279,7 @@ public class TvInputSetupActivity extends Activity {
             Log.d(TAG, "Initial Sync Completed");
 
             // Move to the CompletedFragment
-            GuidedStepFragment fragment = new CompletedFragment();
+            GuidedStepSupportFragment fragment = new CompletedFragment();
             fragment.setArguments(getArguments());
             add(getFragmentManager(), fragment);
         }
