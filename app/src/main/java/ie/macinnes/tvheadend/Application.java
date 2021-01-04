@@ -84,8 +84,7 @@ public class Application extends android.app.Application {
             Log.i(TAG, "Initializing Android StrictMode");
             StrictMode.ThreadPolicy.Builder threadPolicy = new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
-                    .penaltyLog()
-                    .penaltyDeath();
+                    .penaltyLog();
 
             StrictMode.setThreadPolicy(threadPolicy.build());
 
@@ -98,8 +97,7 @@ public class Application extends android.app.Application {
                     .detectFileUriExposure()
 //                    .detectUntaggedSockets()  // Skipped as our HTSP lib does not tag its sockets yet
 //                    .detectCleartextNetwork() // Skipped as HTSP is not encrypted....
-                    .penaltyLog()
-                    .penaltyDeath();
+                    .penaltyLog();
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
