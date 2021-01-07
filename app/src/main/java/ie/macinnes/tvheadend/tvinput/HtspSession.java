@@ -115,6 +115,7 @@ public class HtspSession extends TvInputService.Session implements TvheadendPlay
     @Override
     public void onSetCaptionEnabled(boolean enabled) {
         Log.d(TAG, "Session onSetCaptionEnabled: " + enabled + " (" + mSessionNumber + ")");
+        mTvheadendPlayer.setCaptionEnabled(enabled);
     }
 
     @Override

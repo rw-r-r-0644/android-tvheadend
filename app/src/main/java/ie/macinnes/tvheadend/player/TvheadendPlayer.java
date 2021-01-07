@@ -194,6 +194,11 @@ public class TvheadendPlayer implements Player.EventListener {
         return mTrackSelector.selectTrack(type, trackId);
     }
 
+    public void setCaptionEnabled(boolean enabled) {
+        mTrackSelector.setParameters(mTrackSelector.buildUponParameters()
+                .setRendererDisabled(C.TRACK_TYPE_TEXT, !enabled));
+    }
+
     public void play() {
         // Start playback when ready
         mExoPlayer.setPlayWhenReady(true);
