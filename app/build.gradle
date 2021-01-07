@@ -48,9 +48,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'ie.macinnes.htsp:android-htsp:v0.0.2'
-    // Used for testing local HTSP lib builds
-//    implementation(name: 'library-debug', ext: 'aar')
+    // Dependency on local binaries
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':htsp')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.leanback:leanback:1.0.0'
