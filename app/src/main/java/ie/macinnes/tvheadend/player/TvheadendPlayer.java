@@ -55,6 +55,7 @@ import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.TrackGroup;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
@@ -283,12 +284,13 @@ public class TvheadendPlayer implements Player.EventListener {
 
     private void stop() {
         mExoPlayer.stop();
-        mTrackSelector.clearSelectionOverrides();
+        mTrackSelector.setParameters(mTrackSelector.buildUponParameters().clearSelectionOverrides());
         mHtspSubscriptionDataSourceFactory.releaseCurrentDataSource();
         mHtspFileInputStreamDataSourceFactory.releaseCurrentDataSource();
 
         if (mMediaSource != null) {
-            mMediaSource.releaseSource();
+            // FIXME needed?
+            //mMediaSource.releaseSource();
         }
     }
     public long getTimeshiftStartPosition() {
@@ -398,19 +400,19 @@ public class TvheadendPlayer implements Player.EventListener {
         mTrackSelector = buildTrackSelector();
         mLoadControl = buildLoadControl();
 
-        mExoPlayer = ExoPlayerFactory.newSimpleInstance(mRenderersFactory, mTrackSelector, mLoadControl);
+        mExoPlayer = new SimpleExoPlayer.Builder(mContext, mRenderersFactory)
+                .setLoadControl(mLoadControl)
+                .setTrackSelector(mTrackSelector)
+                .build();
+
         mExoPlayer.addListener(this);
 
         // Add the EventLogger
         mEventLogger = new EventLogger(mTrackSelector);
         mExoPlayer.addListener(mEventLogger);
-        mExoPlayer.addAudioDebugListener(mEventLogger);
-        mExoPlayer.addVideoDebugListener(mEventLogger);
+        mExoPlayer.addAnalyticsListener(mEventLogger);
 
-        final String streamProfile = mSharedPreferences.getString(
-                Constants.KEY_HTSP_STREAM_PROFILE,
-                mContext.getResources().getString(R.string.pref_default_htsp_stream_profile)
-        );
+        final String streamProfile = mSharedPreferences.getString(Constants.KEY_HTSP_STREAM_PROFILE, mContext.getResources().getString(R.string.pref_default_htsp_stream_profile));
 
         // Produces DataSource instances through which media data is loaded.
         mHtspSubscriptionDataSourceFactory = new HtspSubscriptionDataSource.Factory(mContext, mConnection, streamProfile);
@@ -421,10 +423,7 @@ public class TvheadendPlayer implements Player.EventListener {
     }
 
     private TvheadendTrackSelector buildTrackSelector() {
-        TrackSelection.Factory trackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(null);
-
-        TvheadendTrackSelector trackSelector = new TvheadendTrackSelector(trackSelectionFactory);
+        TvheadendTrackSelector trackSelector = new TvheadendTrackSelector(mContext);
 
         final boolean enableAudioTunneling = mSharedPreferences.getBoolean(
             Constants.KEY_AUDIO_TUNNELING_ENABLED,
@@ -432,7 +431,7 @@ public class TvheadendPlayer implements Player.EventListener {
         );
 
         if (enableAudioTunneling) {
-            trackSelector.setTunnelingAudioSessionId(C.generateAudioSessionIdV21(mContext));
+            trackSelector.setParameters(trackSelector.buildUponParameters().setTunnelingAudioSessionId(C.generateAudioSessionIdV21(mContext)));
         }
 
         return trackSelector;
@@ -445,30 +444,29 @@ public class TvheadendPlayer implements Player.EventListener {
                         mContext.getResources().getString(R.string.pref_default_buffer_playback_ms)
                 )
         );
-
-        return new DefaultLoadControl(
-                new DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE),
-                DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
-                DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
-                bufferForPlaybackMs,
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
-                C.DEFAULT_BUFFER_SEGMENT_SIZE,
-                true
-        );
+        return new DefaultLoadControl.Builder()
+                .setBufferDurationsMs(
+                        DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
+                        DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
+                        bufferForPlaybackMs,
+                        DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS)
+                .createDefaultLoadControl();
     }
 
     private void buildHtspChannelMediaSource(Uri channelUri) {
         // This is the MediaSource representing the media to be played.
-        mMediaSource = new ExtractorMediaSource.Factory(mHtspSubscriptionDataSourceFactory)
-                .setExtractorsFactory(mExtractorsFactory)
-                .createMediaSource(channelUri, mHandler, mEventLogger);
+        mMediaSource = new ProgressiveMediaSource.Factory(mHtspSubscriptionDataSourceFactory, mExtractorsFactory)
+                .createMediaSource(channelUri);
+
+        mMediaSource.addEventListener(mHandler, mEventLogger);
     }
 
     private void buildHtspRecordingMediaSource(Uri recordingUri) {
         // This is the MediaSource representing the media to be played.
-        mMediaSource = new ExtractorMediaSource.Factory(mHtspFileInputStreamDataSourceFactory)
-                .setExtractorsFactory(mExtractorsFactory)
-                .createMediaSource(recordingUri, mHandler, mEventLogger);
+        mMediaSource = new ProgressiveMediaSource.Factory(mHtspFileInputStreamDataSourceFactory, mExtractorsFactory)
+                .createMediaSource(recordingUri);
+
+        mMediaSource.addEventListener(mHandler, mEventLogger);
     }
 
     private float getCaptionFontSize() {
@@ -484,23 +482,6 @@ public class TvheadendPlayer implements Player.EventListener {
                                           int trackIndex) {
         return selection != null && selection.getTrackGroup() == group
                 && selection.indexOf(trackIndex) != C.INDEX_UNSET;
-    }
-
-    @Override
-    public void onRepeatModeChanged(int i) {
-        // Don't care about this event here
-    }
-
-    @Override
-    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-        // Don't care about this event here
-
-    }
-
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
-        // Don't care about this event here
-
     }
 
     @Override
@@ -524,7 +505,7 @@ public class TvheadendPlayer implements Player.EventListener {
                 for (int groupIndex = 0; groupIndex < rendererTrackGroups.length; groupIndex++) {
                     TrackGroup trackGroup = rendererTrackGroups.get(groupIndex);
                     for (int trackIndex = 0; trackIndex < trackGroup.length; trackIndex++) {
-                        int formatSupport = mappedTrackInfo.getTrackFormatSupport(rendererIndex, groupIndex, trackIndex);
+                        int formatSupport = mappedTrackInfo.getTrackSupport(rendererIndex, groupIndex, trackIndex);
 
                         if (formatSupport == RendererCapabilities.FORMAT_HANDLED) {
                             Format format = trackGroup.getFormat(trackIndex);
@@ -618,20 +599,5 @@ public class TvheadendPlayer implements Player.EventListener {
     @Override
     public void onPlayerError(ExoPlaybackException error) {
         mListener.onPlayerError(error);
-    }
-
-    @Override
-    public void onPositionDiscontinuity(int reason) {
-
-    }
-
-    @Override
-    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-        // Don't care about this event here
-    }
-
-    @Override
-    public void onSeekProcessed() {
-
     }
 }

@@ -19,9 +19,6 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url "http://dl.bintray.com/kiall/exoplayer"
-        }
-        maven {
             url "http://dl.bintray.com/kiall/htsp"
         }
         maven {

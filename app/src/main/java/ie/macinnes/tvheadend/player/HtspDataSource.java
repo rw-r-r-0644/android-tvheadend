@@ -22,6 +22,7 @@ import android.net.Uri;
 
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DataSpec;
+import com.google.android.exoplayer2.upstream.TransferListener;
 
 import java.io.Closeable;
 import java.lang.ref.WeakReference;
@@ -92,5 +93,10 @@ public abstract class HtspDataSource implements DataSource, Closeable {
         }
 
         return null;
+    }
+
+    @Override
+    public void addTransferListener(TransferListener transferListener) {
+
     }
 }

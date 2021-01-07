@@ -19,6 +19,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.Surface;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
@@ -26,11 +28,13 @@ import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RendererCapabilities;
 import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.analytics.AnalyticsListener;
+import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.decoder.DecoderCounters;
-import com.google.android.exoplayer2.drm.DefaultDrmSessionManager;
+import com.google.android.exoplayer2.drm.DefaultDrmSessionEventListener;
 import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.MetadataRenderer;
+import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.metadata.emsg.EventMessage;
 import com.google.android.exoplayer2.metadata.id3.ApicFrame;
 import com.google.android.exoplayer2.metadata.id3.CommentFrame;
@@ -39,15 +43,14 @@ import com.google.android.exoplayer2.metadata.id3.Id3Frame;
 import com.google.android.exoplayer2.metadata.id3.PrivFrame;
 import com.google.android.exoplayer2.metadata.id3.TextInformationFrame;
 import com.google.android.exoplayer2.metadata.id3.UrlLinkFrame;
-import com.google.android.exoplayer2.source.AdaptiveMediaSourceEventListener;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.MediaSourceEventListener;
 import com.google.android.exoplayer2.source.TrackGroup;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
 import java.io.IOException;
@@ -58,9 +61,10 @@ import java.util.Locale;
  * Logs player events using {@link Log}.
  */
 /* package */ final class EventLogger implements Player.EventListener,
-    AudioRendererEventListener, VideoRendererEventListener, AdaptiveMediaSourceEventListener,
-    ExtractorMediaSource.EventListener, DefaultDrmSessionManager.EventListener,
-    MetadataRenderer.Output {
+        AnalyticsListener,
+        MediaSourceEventListener,
+        DefaultDrmSessionEventListener,
+        MetadataOutput {
 
   private static final String TAG = EventLogger.class.getName();
   private static final int MAX_TIMELINE_ITEM_LINES = 3;
@@ -167,7 +171,7 @@ import java.util.Locale;
           for (int trackIndex = 0; trackIndex < trackGroup.length; trackIndex++) {
             String status = getTrackStatusString(trackSelection, trackGroup, trackIndex);
             String formatSupport = getFormatSupportString(
-                mappedTrackInfo.getTrackFormatSupport(rendererIndex, groupIndex, trackIndex));
+                mappedTrackInfo.getTrackSupport(rendererIndex, groupIndex, trackIndex));
             Log.d(TAG, "      " + status + " Track:" + trackIndex + ", "
                 + getFormatString(trackGroup.getFormat(trackIndex))
                 + ", supported=" + formatSupport);
@@ -230,80 +234,46 @@ import java.util.Locale;
     Log.d(TAG, "]");
   }
 
-  // AudioRendererEventListener
+  // AnalyticsListener
 
   @Override
-  public void onAudioEnabled(DecoderCounters counters) {
-    Log.d(TAG, "audioEnabled [" + getSessionTimeString() + "]");
+  public void onAudioSessionId(EventTime eventTime, int audioSessionId) {
+    Log.d(TAG, "onAudioSessionId [" + audioSessionId + "]");
+  }
+
+  public void onDecoderEnabled(EventTime eventTime, int trackType, DecoderCounters decoderCounters) {
+    Log.d(TAG, "onDecoderEnabled [" + getSessionTimeString() + ", " + trackType + "]");
   }
 
   @Override
-  public void onAudioSessionId(int audioSessionId) {
-    Log.d(TAG, "audioSessionId [" + audioSessionId + "]");
+  public void onDecoderInitialized(EventTime eventTime, int trackType, String decoderName, long initializationDurationMs) {
+    Log.d(TAG, "onDecoderInitialized [" + getSessionTimeString() + ", " + trackType + ", " + decoderName + "]");
   }
 
   @Override
-  public void onAudioDecoderInitialized(String decoderName, long elapsedRealtimeMs,
-      long initializationDurationMs) {
-    Log.d(TAG, "audioDecoderInitialized [" + getSessionTimeString() + ", " + decoderName + "]");
+  public void onDecoderDisabled(EventTime eventTime, int trackType, DecoderCounters decoderCounters) {
+    Log.d(TAG, "onDecoderDisabled [" + getSessionTimeString() + ", " + trackType + "]");
   }
 
   @Override
-  public void onAudioInputFormatChanged(Format format) {
-    Log.d(TAG, "audioFormatChanged [" + getSessionTimeString() + ", " + getFormatString(format)
-        + "]");
+  public void onDecoderInputFormatChanged(EventTime eventTime, int trackType, Format format) {
+    Log.d(TAG, "onDecoderInputFormatChanged [" + getSessionTimeString() + ", " + trackType + ", " + getFormatString(format) + "]");
   }
 
   @Override
-  public void onAudioSinkUnderrun(int bufferSize, long bufferSizeMs, long elapsedSinceLastFeedMs) {
-
+  public void onDroppedVideoFrames(EventTime eventTime, int droppedFrames, long elapsedMs) {
+    Log.d(TAG, "onDroppedVideoFrames [" + getSessionTimeString() + ", " + droppedFrames + "]");
   }
 
   @Override
-  public void onAudioDisabled(DecoderCounters counters) {
-    Log.d(TAG, "audioDisabled [" + getSessionTimeString() + "]");
-  }
-
-
-  // VideoRendererEventListener
-
-  @Override
-  public void onVideoEnabled(DecoderCounters counters) {
-    Log.d(TAG, "videoEnabled [" + getSessionTimeString() + "]");
-  }
-
-  @Override
-  public void onVideoDecoderInitialized(String decoderName, long elapsedRealtimeMs,
-      long initializationDurationMs) {
-    Log.d(TAG, "videoDecoderInitialized [" + getSessionTimeString() + ", " + decoderName + "]");
-  }
-
-  @Override
-  public void onVideoInputFormatChanged(Format format) {
-    Log.d(TAG, "videoFormatChanged [" + getSessionTimeString() + ", " + getFormatString(format)
-        + "]");
-  }
-
-  @Override
-  public void onVideoDisabled(DecoderCounters counters) {
-    Log.d(TAG, "videoDisabled [" + getSessionTimeString() + "]");
-  }
-
-  @Override
-  public void onDroppedFrames(int count, long elapsed) {
-    Log.d(TAG, "droppedFrames [" + getSessionTimeString() + ", " + count + "]");
-  }
-
-  @Override
-  public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
-      float pixelWidthHeightRatio) {
+  public void onVideoSizeChanged(
+          EventTime eventTime,
+          int width,
+          int height,
+          int unappliedRotationDegrees,
+          float pixelWidthHeightRatio) {
     Log.d(TAG, "videoSizeChanged [" + getSessionTimeString() + ", " + width + ", " + height + ", "
                + unappliedRotationDegrees + ", " + pixelWidthHeightRatio + "]");
-  }
-
-  @Override
-  public void onRenderedFirstFrame(Surface surface) {
-    // Do nothing.
   }
 
   // DefaultDrmSessionManager.EventListener
@@ -318,63 +288,16 @@ import java.util.Locale;
     Log.d(TAG, "drmKeysLoaded [" + getSessionTimeString() + "]");
   }
 
-  @Override
-  public void onDrmKeysRestored() {
-    // Do nothing.
-  }
+  // MediaSourceEventListener
 
   @Override
-  public void onDrmKeysRemoved() {
-    // Do nothing.
-  }
-
-  // ExtractorMediaSource.EventListener
-
-  @Override
-  public void onLoadError(IOException error) {
+  public void onLoadError(int windowIndex,
+                          @Nullable MediaSource.MediaPeriodId mediaPeriodId,
+                          LoadEventInfo loadEventInfo,
+                          MediaLoadData mediaLoadData,
+                          IOException error,
+                          boolean wasCanceled) {
     printInternalError("loadError", error);
-  }
-
-  // AdaptiveMediaSourceEventListener
-
-  @Override
-  public void onLoadStarted(DataSpec dataSpec, int dataType, int trackType, Format trackFormat,
-      int trackSelectionReason, Object trackSelectionData, long mediaStartTimeMs,
-      long mediaEndTimeMs, long elapsedRealtimeMs) {
-    // Do nothing.
-  }
-
-  @Override
-  public void onLoadError(DataSpec dataSpec, int dataType, int trackType, Format trackFormat,
-      int trackSelectionReason, Object trackSelectionData, long mediaStartTimeMs,
-      long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs, long bytesLoaded,
-      IOException error, boolean wasCanceled) {
-    printInternalError("loadError", error);
-  }
-
-  @Override
-  public void onLoadCanceled(DataSpec dataSpec, int dataType, int trackType, Format trackFormat,
-      int trackSelectionReason, Object trackSelectionData, long mediaStartTimeMs,
-      long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs, long bytesLoaded) {
-    // Do nothing.
-  }
-
-  @Override
-  public void onLoadCompleted(DataSpec dataSpec, int dataType, int trackType, Format trackFormat,
-      int trackSelectionReason, Object trackSelectionData, long mediaStartTimeMs,
-      long mediaEndTimeMs, long elapsedRealtimeMs, long loadDurationMs, long bytesLoaded) {
-    // Do nothing.
-  }
-
-  @Override
-  public void onUpstreamDiscarded(int trackType, long mediaStartTimeMs, long mediaEndTimeMs) {
-    // Do nothing.
-  }
-
-  @Override
-  public void onDownstreamFormatChanged(int trackType, Format trackFormat, int trackSelectionReason,
-      Object trackSelectionData, long mediaTimeMs) {
-    // Do nothing.
   }
 
   // Internal methods
