@@ -46,6 +46,7 @@ public class Subscriber implements HtspMessage.Listener, Authenticator.Listener 
     public static final long INVALID_TIMESHIFT_TIME = -9223372036854775808L;
 
     private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(new String[]{
+            "subscribe",
             "subscriptionStart", "subscriptionStatus", "subscriptionStop",
             "queueStatus", "signalStatus", "timeshiftStatus", "muxpkt",
             "subscriptionSkip", "subscriptionSpeed",
@@ -144,14 +145,11 @@ public class Subscriber implements HtspMessage.Listener, Authenticator.Listener 
             subscribeRequest.put("profile", mProfile);
         }
 
-        HtspMessage subscribeResponse = mDispatcher.sendMessage(subscribeRequest, 5000);
-
-        mTimeshiftPeriod = subscribeResponse.getInteger("timeshiftPeriod", 0);
-        Log.i(TAG, "Available timeshift period in seconds: " + mTimeshiftPeriod);
-
-        mIsSubscribed = true;
-
-        startTimer();
+        try {
+            mDispatcher.sendMessage(subscribeRequest);
+        } catch (HtspNotConnectedException e) {
+            // Ignore: If we're not connected, TVHeadend has already unsubscribed us
+        }
     }
 
     public void unsubscribe() {
@@ -270,12 +268,20 @@ public class Subscriber implements HtspMessage.Listener, Authenticator.Listener 
         if (HANDLED_METHODS.contains(method)) {
             final int subscriptionId = message.getInteger("subscriptionId", INVALID_SUBSCRIPTION_ID);
 
-            if (subscriptionId != mSubscriptionId) {
+            if (!method.equals("subscribe") && subscriptionId != mSubscriptionId) {
                 // This message relates to a different subscription, don't handle it
                 return;
             }
 
             switch (method) {
+                case "subscribe":
+                    mTimeshiftPeriod = message.getInteger("timeshiftPeriod", 0);
+                    Log.i(TAG, "Available timeshift period in seconds: " + mTimeshiftPeriod);
+
+                    mIsSubscribed = true;
+
+                    startTimer();
+                    break;
                 case "subscriptionStart":
                     onSubscriptionStart(message);
                     for (final Listener listener : mListeners) {
