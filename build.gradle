@@ -1,6 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from: 'properties.gradle'
-
 buildscript {
     repositories {
         jcenter()
@@ -12,6 +10,12 @@ buildscript {
         classpath 'org.ajoberstar:gradle-git:1.7.2'
     }
 }
+
+plugins {
+    id 'com.gladed.androidgitversion' version '0.4.14'
+}
+
+apply from: 'properties.gradle'
 
 allprojects {
     repositories {

@@ -1,9 +1,14 @@
 apply plugin: 'com.android.application'
 
-apply from: '../version.gradle'
 apply from: '../signing.gradle'
 apply from: '../acra.gradle'
 apply from: '../play.gradle'
+
+androidGitVersion {
+    codeFormat 'MNNPPP'
+    commitHashLength = 8
+    prefix = 'v'
+}
 
 android {
     compileSdkVersion project.ext.compileSdkVersion
@@ -20,8 +25,8 @@ android {
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
 
-        versionCode project.ext.versionCode
-        versionName project.ext.versionName
+        versionName androidGitVersion.name()
+        versionCode androidGitVersion.code()
     }
 
     buildTypes {
