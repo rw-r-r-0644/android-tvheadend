@@ -4,6 +4,7 @@ acra.properties
 keystore.properties
 /projectFilesBackup/
 */libs/*.aar
+extensions/ffmpeg/.cxx
 
 # Created by https://www.gitignore.io/api/osx,linux,sublimetext,intellij,gradle,android,java
 

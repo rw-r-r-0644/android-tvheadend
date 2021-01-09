@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/android-tvheadend.iml" filepath="$PROJECT_DIR$/.idea/android-tvheadend.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android-tvheadend.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android-tvheadend.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/extensions/ffmpeg/android-tvheadend.extension-ffmpeg.iml" filepath="$PROJECT_DIR$/.idea/modules/extensions/ffmpeg/android-tvheadend.extension-ffmpeg.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/android-tvheadend.htsp.iml" filepath="$PROJECT_DIR$/.idea/modules/library/android-tvheadend.htsp.iml" />
     </modules>
   </component>

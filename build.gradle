@@ -10,25 +10,25 @@ buildscript {
         classpath 'com.android.tools.build:gradle:4.1.1'
         classpath 'com.github.triplet.gradle:play-publisher:1.2.0'
         classpath 'org.ajoberstar:gradle-git:1.7.2'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
 allprojects {
     repositories {
+        jcenter()
+        google()
         maven {
             url "https://maven.google.com"
         }
-        jcenter()
-        google()
     }
 
     project.ext {
-        compileSdkVersion = 29
-        targetSdkVersion = 29
         minSdkVersion = 22
+        compileSdkVersion=30
+        targetSdkVersion = 29
+        ndkVersion='22.0.7026061'
+        javaVersion=JavaVersion.VERSION_1_8
+        exoPlayerVersion='2.11.8'
     }
 }
 

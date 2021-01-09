@@ -9,9 +9,8 @@ android {
     compileSdkVersion project.ext.compileSdkVersion
 
     compileOptions {
-        // Sets Java compatibility to Java 8
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility project.ext.javaVersion
+        targetCompatibility project.ext.javaVersion
     }
 
     defaultConfig {
@@ -51,16 +50,14 @@ dependencies {
     // Dependency on local binaries
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    api 'com.google.android.exoplayer:exoplayer-core:' + project.ext.exoPlayerVersion
+    api 'com.google.android.exoplayer:exoplayer-ui:' + project.ext.exoPlayerVersion
+    api project(':extension-ffmpeg')
     implementation project(':htsp')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.leanback:leanback-preference:1.0.0'
-
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.11.7'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.11.7'
-    // Use our own exoplayer ffmpeg-extension builds
-    implementation('org.tvheadend.tvhclient.exoplayer:extension-ffmpeg:2.11.7', { transitive = false })
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
