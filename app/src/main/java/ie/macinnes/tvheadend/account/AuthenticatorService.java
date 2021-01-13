@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import ie.macinnes.tvheadend.Constants;
@@ -36,8 +37,6 @@ public class AuthenticatorService extends Service {
 
     private AccountManager mAccountManager;
     private Account[] mCurrentAccounts;
-
-    private SharedPreferences mSharedPreferences;
 
     private final OnAccountsUpdateListener mAccountsUpdateListener = new OnAccountsUpdateListener() {
         @Override
@@ -69,7 +68,8 @@ public class AuthenticatorService extends Service {
                     MiscUtils.setSetupComplete(getBaseContext(), false);
 
                     // Discard the previously saved last EPG update stamp
-                    mSharedPreferences.edit().remove(Constants.KEY_EPG_LAST_UPDATE).apply();
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext().getApplicationContext());
+                    sharedPreferences.edit().remove(Constants.KEY_EPG_LAST_UPDATE).apply();
                 }
             }
         }
@@ -79,9 +79,6 @@ public class AuthenticatorService extends Service {
     public void onCreate() {
         mAccountManager = AccountManager.get(this);
         mCurrentAccounts = AccountUtils.getAllAccounts(this);
-
-        mSharedPreferences = getBaseContext().getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
 
         AccountUtils.addOnAccountsUpdatedListener(this, mAccountsUpdateListener, new Handler(), true);
     }

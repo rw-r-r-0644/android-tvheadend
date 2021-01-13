@@ -76,9 +76,6 @@ public class SettingsFragment extends LeanbackSettingsFragment implements Dialog
 
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
-            getPreferenceManager().setSharedPreferencesName(Constants.PREFERENCE_TVHEADEND);
-            getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
-
             String root = getArguments().getString(PreferenceFragment.ARG_PREFERENCE_ROOT, null);
 
             if (root == null) {

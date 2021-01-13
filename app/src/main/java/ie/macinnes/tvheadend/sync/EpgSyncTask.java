@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -133,7 +134,6 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     private final HtspMessage.Dispatcher mDispatcher;
     private boolean mQuickSync = false;
 
-    private final SharedPreferences mSharedPreferences;
     private final ContentResolver mContentResolver;
 
     private final HandlerThread mHandlerThread;
@@ -214,10 +214,6 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     public EpgSyncTask(Context context, @NonNull HtspMessage.Dispatcher dispatcher) {
         mContext = context;
         mDispatcher = dispatcher;
-
-        mSharedPreferences = context.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
-
         mContentResolver = context.getContentResolver();
 
         mHandlerThread = new HandlerThread("EpgSyncTask Handler Thread");
@@ -254,13 +250,15 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     @Override
     public void onAuthenticationStateChange(@NonNull Authenticator.State state) {
         if (state == Authenticator.State.AUTHENTICATED) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+
             long epgMaxTime = Long.parseLong(
-                    mSharedPreferences.getString(
+                    sharedPreferences.getString(
                             Constants.KEY_EPG_MAX_TIME,
                             mContext.getResources().getString(R.string.pref_default_epg_max_time)
                     )
             );
-            final boolean lastUpdateEnabled = mSharedPreferences.getBoolean(
+            final boolean lastUpdateEnabled = sharedPreferences.getBoolean(
                     Constants.KEY_EPG_LAST_UPDATE_ENABLED,
                     mContext.getResources().getBoolean(R.bool.pref_default_epg_last_update_enabled)
             );
@@ -284,7 +282,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             enableAsyncMetadataRequest.put("epgMaxTime", epgMaxTime);
 
             if (lastUpdateEnabled) {
-                final long lastUpdate = mSharedPreferences.getLong(Constants.KEY_EPG_LAST_UPDATE, 0);
+                final long lastUpdate = sharedPreferences.getLong(Constants.KEY_EPG_LAST_UPDATE, 0);
                 enableAsyncMetadataRequest.put("lastUpdate", lastUpdate);
                 Log.d(TAG, "Setting lastUpdate field to " + lastUpdate);
             } else {
@@ -349,8 +347,8 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     // Internal Methods
     private void storeLastUpdate() {
         long unixTime = System.currentTimeMillis() / 1000L;
-
-        mSharedPreferences.edit().putLong(Constants.KEY_EPG_LAST_UPDATE, unixTime).apply();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+        sharedPreferences.edit().putLong(Constants.KEY_EPG_LAST_UPDATE, unixTime).apply();
     }
 
     private ContentValues channelToContentValues(@NonNull HtspMessage message) {
@@ -840,7 +838,8 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
         if (message.containsKey(PROGRAM_IMAGE)) {
             values.put(TvContractCompat.Programs.COLUMN_POSTER_ART_URI, message.getString(PROGRAM_IMAGE));
         } else {
-            final boolean defaultPosterArtEnabled = mSharedPreferences.getBoolean(
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+            final boolean defaultPosterArtEnabled = sharedPreferences.getBoolean(
                     Constants.KEY_EPG_DEFAULT_POSTER_ART_ENABLED,
                     mContext.getResources().getBoolean(R.bool.pref_default_epg_default_poster_art_enabled)
             );

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -63,7 +64,7 @@ class TvheadendRenderersFactory extends DefaultRenderersFactory {
                                        long allowedVideoJoiningTimeMs,
                                        ArrayList<Renderer> out) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
         final boolean enableShieldWorkaround = sharedPreferences.getBoolean(
                 Constants.KEY_SHIELD_WORKAROUND_ENABLED,
@@ -108,7 +109,7 @@ class TvheadendRenderersFactory extends DefaultRenderersFactory {
                                        AudioRendererEventListener eventListener,
                                        ArrayList<Renderer> out) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
         // Enable FFmpeg Audio Decoder
         final boolean enableFfmpegAudioRenderer = sharedPreferences.getBoolean(
@@ -137,7 +138,7 @@ class TvheadendRenderersFactory extends DefaultRenderersFactory {
      */
     private MediaCodecSelector buildMediaCodecSelector(Context context) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
         final boolean enablePassthroughDecoder = sharedPreferences.getBoolean(
                 Constants.KEY_AUDIO_PASSTHROUGH_DECODER_ENABLED,

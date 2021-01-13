@@ -27,9 +27,6 @@ public class Constants {
     public static final String CONTENT_AUTHORITY = TvContractCompat.AUTHORITY;
     public static final String ACCOUNT_TYPE = "ie.macinnes.tvheadend";
 
-    // Preferences Files and Keys
-    public static final String PREFERENCE_TVHEADEND = "tvheadend";
-
     // Misc Preference Keys and Values
     public static final String KEY_SETUP_COMPLETE = "SETUP-COMPLETE";
 

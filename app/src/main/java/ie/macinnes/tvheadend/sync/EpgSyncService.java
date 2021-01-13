@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import ie.macinnes.htsp.HtspConnection;
@@ -40,8 +41,6 @@ public class EpgSyncService extends Service {
 
     private HandlerThread mHandlerThread;
     private Handler mHandler;
-
-    private SharedPreferences mSharedPreferences;
 
     private AccountManager mAccountManager;
     private Account mAccount;
@@ -62,15 +61,14 @@ public class EpgSyncService extends Service {
     public void onCreate() {
         Log.i(TAG, "Starting EPG Sync Service");
 
-        mSharedPreferences = getSharedPreferences(Constants.PREFERENCE_TVHEADEND, MODE_PRIVATE);
-
         if (!MiscUtils.isSetupComplete(this)) {
             Log.i(TAG, "Setup not completed, shutting down EPG Sync Service");
             stopSelf();
             return;
         }
 
-        final boolean enableEpgSync = mSharedPreferences.getBoolean(
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final boolean enableEpgSync = sharedPreferences.getBoolean(
                 Constants.KEY_EPG_SYNC_ENABLED,
                 getResources().getBoolean(R.bool.pref_default_epg_sync_enabled)
         );

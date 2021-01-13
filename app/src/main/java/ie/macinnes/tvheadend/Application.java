@@ -21,6 +21,8 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -63,8 +65,7 @@ public class Application extends android.app.Application {
                         .setReportType(HttpSender.Type.JSON)
                         .setFormUri(BuildConfig.ACRA_REPORT_URI + "/" + BuildConfig.VERSION_CODE)
                         .setLogcatArguments("-t", "1000", "-v", "time", "*:D")
-                        .setAdditionalSharedPreferences(Constants.PREFERENCE_TVHEADEND)
-                        .setSharedPreferenceName(Constants.PREFERENCE_TVHEADEND)
+                        .setSharedPreferenceName(base.getPackageName() + "_preferences")
                         .setSharedPreferenceMode(Context.MODE_PRIVATE)
                         .setBuildConfigClass(BuildConfig.class)
                         .build();

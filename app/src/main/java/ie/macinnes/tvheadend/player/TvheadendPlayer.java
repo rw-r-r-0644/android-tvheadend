@@ -25,6 +25,7 @@ import android.media.tv.TvTrackInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
@@ -112,7 +113,6 @@ public class TvheadendPlayer implements Player.EventListener {
     private final Listener mListener;
 
     private final Handler mHandler;
-    private final SharedPreferences mSharedPreferences;
 
     private SimpleExoPlayer mExoPlayer;
     private RenderersFactory mRenderersFactory;
@@ -139,8 +139,6 @@ public class TvheadendPlayer implements Player.EventListener {
         mListener = listener;
 
         mHandler = new Handler();
-        mSharedPreferences = mContext.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
 
         buildExoPlayer();
     }
@@ -361,7 +359,8 @@ public class TvheadendPlayer implements Player.EventListener {
     }
 
     private DebugTextViewHelper getDebugTextView() {
-        final boolean enableDebugTextView = mSharedPreferences.getBoolean(
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+        final boolean enableDebugTextView = sharedPreferences.getBoolean(
                 Constants.KEY_DEBUG_TEXT_VIEW_ENABLED,
                 mContext.getResources().getBoolean(R.bool.pref_default_debug_text_view_enabled)
         );
@@ -384,7 +383,8 @@ public class TvheadendPlayer implements Player.EventListener {
         float captionTextSize = getCaptionFontSize();
         captionTextSize *= fontScale;
 
-        final boolean applyEmbeddedStyles = mSharedPreferences.getBoolean(
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+        final boolean applyEmbeddedStyles = sharedPreferences.getBoolean(
                 Constants.KEY_CAPTIONS_APPLY_EMBEDDED_STYLES,
                 mContext.getResources().getBoolean(R.bool.pref_default_captions_apply_embedded_styles)
         );
@@ -415,7 +415,8 @@ public class TvheadendPlayer implements Player.EventListener {
         mExoPlayer.addListener(mEventLogger);
         mExoPlayer.addAnalyticsListener(mEventLogger);
 
-        final String streamProfile = mSharedPreferences.getString(Constants.KEY_HTSP_STREAM_PROFILE, mContext.getResources().getString(R.string.pref_default_htsp_stream_profile));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+        final String streamProfile = sharedPreferences.getString(Constants.KEY_HTSP_STREAM_PROFILE, mContext.getResources().getString(R.string.pref_default_htsp_stream_profile));
 
         // Produces DataSource instances through which media data is loaded.
         mHtspSubscriptionDataSourceFactory = new HtspSubscriptionDataSource.Factory(mContext, mConnection, streamProfile);
@@ -428,7 +429,8 @@ public class TvheadendPlayer implements Player.EventListener {
     private TvheadendTrackSelector buildTrackSelector() {
         TvheadendTrackSelector trackSelector = new TvheadendTrackSelector(mContext);
 
-        final boolean enableAudioTunneling = mSharedPreferences.getBoolean(
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+        final boolean enableAudioTunneling = sharedPreferences.getBoolean(
                 Constants.KEY_AUDIO_TUNNELING_ENABLED,
                 mContext.getResources().getBoolean(R.bool.pref_default_audio_tunneling_enabled)
         );
@@ -441,8 +443,9 @@ public class TvheadendPlayer implements Player.EventListener {
     }
 
     private LoadControl buildLoadControl() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
         int bufferForPlaybackMs = Integer.parseInt(
-                mSharedPreferences.getString(
+                sharedPreferences.getString(
                         Constants.KEY_BUFFER_PLAYBACK_MS,
                         mContext.getResources().getString(R.string.pref_default_buffer_playback_ms)
                 )

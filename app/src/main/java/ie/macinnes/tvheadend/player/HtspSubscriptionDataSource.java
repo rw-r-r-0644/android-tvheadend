@@ -18,6 +18,7 @@ package ie.macinnes.tvheadend.player;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -74,7 +75,6 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
 
     private final String mStreamProfile;
 
-    private final SharedPreferences mSharedPreferences;
     private int mTimeshiftPeriod = 0;
 
     private final int mDataSourceNumber;
@@ -91,12 +91,10 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
 
         mStreamProfile = streamProfile;
 
-        mSharedPreferences = mContext.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
-
-        boolean timeshiftEnabled = mSharedPreferences.getBoolean(
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        boolean timeshiftEnabled = sharedPreferences.getBoolean(
                 Constants.KEY_TIMESHIFT_ENABLED,
-                mContext.getResources().getBoolean(R.bool.pref_default_timeshift_enabled));
+                context.getResources().getBoolean(R.bool.pref_default_timeshift_enabled));
 
         if (timeshiftEnabled) {
             // TODO: Eventually, this should be a preference.

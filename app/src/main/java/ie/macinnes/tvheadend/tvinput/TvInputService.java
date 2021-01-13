@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.media.tv.TvInputInfo;
 import android.media.tv.TvInputManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -47,14 +48,9 @@ public class TvInputService extends android.media.tv.TvInputService {
     private AccountManager mAccountManager;
     private Account mAccount;
 
-    private SharedPreferences mSharedPreferences;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        mSharedPreferences = getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
 
         mAccountManager = AccountManager.get(this);
         mAccount = AccountUtils.getActiveAccount(this);
@@ -91,7 +87,8 @@ public class TvInputService extends android.media.tv.TvInputService {
     }
 
     private void maybeEnableDvr() {
-        boolean dvrEnabled = mSharedPreferences.getBoolean(
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean dvrEnabled = sharedPreferences.getBoolean(
                 Constants.KEY_DVR_ENABLED,
                 getResources().getBoolean(R.bool.pref_default_dvr_enabled));
 
@@ -99,7 +96,7 @@ public class TvInputService extends android.media.tv.TvInputService {
             Log.i(TAG, "Enabling DVR Support");
             int tuners;
             try {
-                tuners = Integer.parseInt(mSharedPreferences.getString(
+                tuners = Integer.parseInt(sharedPreferences.getString(
                         Constants.KEY_TUNER_COUNT,
                         getResources().getString(R.string.pref_default_tuner_count)));
             } catch (NumberFormatException e) {

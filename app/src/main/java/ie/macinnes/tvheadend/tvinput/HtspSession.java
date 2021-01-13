@@ -24,6 +24,7 @@ import android.media.tv.TvTrackInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Surface;
@@ -56,7 +57,6 @@ public class HtspSession extends TvInputService.Session implements TvheadendPlay
     private final int mSessionNumber;
     private final Handler mHandler;
     private final CaptioningManager mCaptioningManager;
-    private final SharedPreferences mSharedPreferences;
 
     private final TvheadendPlayer mTvheadendPlayer;
 
@@ -69,9 +69,6 @@ public class HtspSession extends TvInputService.Session implements TvheadendPlay
         mSessionNumber = sSessionCounter.getAndIncrement();
         mHandler = new Handler();
         mCaptioningManager = (CaptioningManager) context.getSystemService(Context.CAPTIONING_SERVICE);
-
-        mSharedPreferences = mContext.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
 
         Log.d(TAG, "HtspSession created (" + mSessionNumber + ")");
 
@@ -238,7 +235,8 @@ public class HtspSession extends TvInputService.Session implements TvheadendPlay
             mTvheadendPlayer.open(channelUri);
             mTvheadendPlayer.play();
 
-            boolean timeshiftEnabled = mSharedPreferences.getBoolean(
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
+            boolean timeshiftEnabled = sharedPreferences.getBoolean(
                     Constants.KEY_TIMESHIFT_ENABLED,
                     mContext.getResources().getBoolean(R.bool.pref_default_timeshift_enabled));
 

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 
 public class MiscUtils {
 
@@ -34,18 +35,14 @@ public class MiscUtils {
     }
 
     public static void setSetupComplete(Context context, boolean isSetupComplete) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
-
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.KEY_SETUP_COMPLETE, isSetupComplete);
         editor.apply();
     }
 
     public static boolean isSetupComplete(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
-
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         return sharedPreferences.getBoolean(Constants.KEY_SETUP_COMPLETE, false);
     }
 

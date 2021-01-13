@@ -23,6 +23,7 @@ import android.media.tv.TvInputService;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -49,7 +50,6 @@ class HtspRecordingSession extends TvInputService.RecordingSession {
     private final SimpleHtspConnection mConnection;
     private final int mSessionNumber;
     private final Handler mHandler;
-    private final SharedPreferences mSharedPreferences;
 
     private Uri mChannelUri;
     private Uri mProgramUri;
@@ -62,9 +62,6 @@ class HtspRecordingSession extends TvInputService.RecordingSession {
         mConnection = connection;
         mSessionNumber = sSessionCounter.getAndIncrement();
         mHandler = new Handler();
-
-        mSharedPreferences = mContext.getSharedPreferences(
-                Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
 
         Log.d(TAG, "HtspRecordingSession created (" + mSessionNumber + ")");
     }
