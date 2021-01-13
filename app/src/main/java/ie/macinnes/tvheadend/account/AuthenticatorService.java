@@ -31,6 +31,7 @@ import ie.macinnes.tvheadend.TvContractUtils;
 import ie.macinnes.tvheadend.sync.EpgSyncService;
 
 public class AuthenticatorService extends Service {
+
     private static final String TAG = AuthenticatorService.class.getName();
 
     private AccountManager mAccountManager;

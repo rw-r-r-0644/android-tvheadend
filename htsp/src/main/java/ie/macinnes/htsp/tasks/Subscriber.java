@@ -17,8 +17,9 @@
 package ie.macinnes.htsp.tasks;
 
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import ie.macinnes.htsp.HtspNotConnectedException;
  * Handles a Subscription on a HTSP Connection
  */
 public class Subscriber implements HtspMessage.Listener, Authenticator.Listener {
+
     private static final String TAG = Subscriber.class.getSimpleName();
 
     private static final int INVALID_SUBSCRIPTION_ID = -1;
@@ -45,13 +47,19 @@ public class Subscriber implements HtspMessage.Listener, Authenticator.Listener 
     // Copy of TvInputManager.TIME_SHIFT_INVALID_TIME, available on M+ Only.
     public static final long INVALID_TIMESHIFT_TIME = -9223372036854775808L;
 
-    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(new String[]{
+    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(
             "subscribe",
-            "subscriptionStart", "subscriptionStatus", "subscriptionStop",
-            "queueStatus", "signalStatus", "timeshiftStatus", "muxpkt",
-            "subscriptionSkip", "subscriptionSpeed",
+            "subscriptionStart",
+            "subscriptionStatus",
+            "subscriptionStop",
+            "queueStatus",
+            "signalStatus",
+            "timeshiftStatus",
+            "muxpkt",
+            "subscriptionSkip",
+            "subscriptionSpeed"
             // "subscriptionGrace"
-    }));
+    ));
 
     private static final AtomicInteger mSubscriptionCount = new AtomicInteger();
 
@@ -60,13 +68,21 @@ public class Subscriber implements HtspMessage.Listener, Authenticator.Listener 
      */
     public interface Listener {
         void onSubscriptionStart(@NonNull HtspMessage message);
+
         void onSubscriptionStatus(@NonNull HtspMessage message);
+
         void onSubscriptionStop(@NonNull HtspMessage message);
+
         void onSubscriptionSkip(@NonNull HtspMessage message);
+
         void onSubscriptionSpeed(@NonNull HtspMessage message);
+
         void onQueueStatus(@NonNull HtspMessage message);
+
         void onSignalStatus(@NonNull HtspMessage message);
+
         void onTimeshiftStatus(@NonNull HtspMessage message);
+
         void onMuxpkt(@NonNull HtspMessage message);
     }
 

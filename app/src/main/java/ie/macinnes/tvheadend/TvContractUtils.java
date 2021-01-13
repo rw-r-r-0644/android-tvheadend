@@ -22,18 +22,19 @@ import android.media.tv.TvContract;
 import android.media.tv.TvContract.Channels;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.util.SparseArray;
 
+import androidx.annotation.RequiresApi;
+
 public class TvContractUtils {
+
     private static final String TAG = TvContractUtils.class.getName();
 
     public static final long INVALID_CHANNEL_ID = -1;
     private static final long INVALID_RECORDED_PROGRAM_ID = -1;
 
     private TvContractUtils() {
-        throw new IllegalAccessError("Utility class");
     }
 
     public static String getInputId() {
@@ -96,7 +97,7 @@ public class TvContractUtils {
         String[] projection = {Channels._ID, Channels.COLUMN_ORIGINAL_NETWORK_ID};
 
         // TODO: Handle when more than 1, or 0 results come back
-        try (Cursor cursor = resolver.query(channelUri, projection, null,null, null)) {
+        try (Cursor cursor = resolver.query(channelUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 return cursor.getInt(1);
             }
@@ -174,7 +175,7 @@ public class TvContractUtils {
         String[] projection = {TvContract.Programs._ID, TvContract.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
 
         // TODO: Handle when more than 1, or 0 results come back
-        try (Cursor cursor = resolver.query(programUri, projection, null,null, null)) {
+        try (Cursor cursor = resolver.query(programUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 return cursor.getInt(1);
             }
@@ -263,7 +264,7 @@ public class TvContractUtils {
         String[] projection = {TvContract.RecordedPrograms._ID, TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
 
         // TODO: Handle when more than 1, or 0 results come back
-        try (Cursor cursor = resolver.query(recordedProgramUri, projection, null,null, null)) {
+        try (Cursor cursor = resolver.query(recordedProgramUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 return cursor.getInt(1);
             }

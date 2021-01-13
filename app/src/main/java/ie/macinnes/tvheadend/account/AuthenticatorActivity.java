@@ -19,15 +19,16 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.leanback.app.GuidedStepFragment;
 import androidx.leanback.widget.GuidanceStylist;
 import androidx.leanback.widget.GuidedAction;
 import androidx.leanback.widget.GuidedActionsStylist;
-import android.text.InputType;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ import ie.macinnes.tvheadend.Constants;
 import ie.macinnes.tvheadend.R;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
+
     private static final String TAG = AuthenticatorActivity.class.getName();
 
     @Override
@@ -245,7 +247,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
     public static class ValidateHTSPAccountFragment extends BaseGuidedStepFragment implements
-            HtspConnection.Listener, Authenticator.Listener{
+            HtspConnection.Listener, Authenticator.Listener {
         private static final int ACTION_ID_PROCESSING = 1;
 
         private SimpleHtspConnection mConnection;

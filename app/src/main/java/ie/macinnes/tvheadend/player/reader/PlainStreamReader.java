@@ -17,6 +17,7 @@
 package ie.macinnes.tvheadend.player.reader;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
@@ -32,6 +33,7 @@ import ie.macinnes.tvheadend.Application;
  * A PlainStreamReader simply copies the raw bytes from muxpkt's over onto the track output
  */
 abstract class PlainStreamReader implements StreamReader {
+
     private static final String TAG = PlainStreamReader.class.getName();
 
     private final Context mContext;

@@ -29,11 +29,8 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import java.util.Locale;
 
 class ExoPlayerUtils {
-    private static final String TAG = ExoPlayerUtils.class.getName();
 
-    private ExoPlayerUtils() {
-        throw new IllegalAccessError("Utility class");
-    }
+    private static final String TAG = ExoPlayerUtils.class.getName();
 
     public static TvTrackInfo buildTvTrackInfo(Format format) {
         String trackName = ExoPlayerUtils.buildTrackName(format);
@@ -74,7 +71,7 @@ class ExoPlayerUtils {
                 break;
 
             default:
-                Log.w(TAG, "Unsupported track type: " + format.sampleMimeType + " / "  + trackName);
+                Log.w(TAG, "Unsupported track type: " + format.sampleMimeType + " / " + trackName);
                 return null;
         }
 
@@ -138,10 +135,13 @@ class ExoPlayerUtils {
     private static String joinWithSeparator(String first, String second) {
         if (first.length() == 0) {
             return second;
-        } else if(second.length() == 0) {
+        } else if (second.length() == 0) {
             return first;
         } else {
             return first + ", " + second;
         }
+    }
+
+    private ExoPlayerUtils() {
     }
 }

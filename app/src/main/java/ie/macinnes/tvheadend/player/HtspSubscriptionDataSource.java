@@ -43,12 +43,16 @@ import ie.macinnes.tvheadend.Constants;
 import ie.macinnes.tvheadend.R;
 
 public class HtspSubscriptionDataSource extends HtspDataSource implements Subscriber.Listener {
+
+    public static final byte[] HEADER = new byte[]{0, 1, 0, 1, 0, 1, 0, 1};
+
     private static final String TAG = HtspSubscriptionDataSource.class.getName();
+    private static final int BUFFER_SIZE = 10 * 1024 * 1024;
+
     private static final AtomicInteger sDataSourceCount = new AtomicInteger();
-    private static final int BUFFER_SIZE = 10*1024*1024;
-    public static final byte[] HEADER = new byte[] {0,1,0,1,0,1,0,1};
 
     public static class Factory extends HtspDataSource.Factory {
+
         private static final String TAG = Factory.class.getName();
 
         private final Context mContext;
@@ -76,7 +80,7 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
     private final int mDataSourceNumber;
     private Subscriber mSubscriber;
 
-    private ByteBuffer mBuffer;
+    private final ByteBuffer mBuffer;
     private final ReentrantLock mLock = new ReentrantLock();
 
     private boolean mIsOpen = false;
@@ -101,7 +105,7 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
 
         mDataSourceNumber = sDataSourceCount.incrementAndGet();
 
-        Log.d(TAG, "New HtspSubscriptionDataSource instantiated ("+mDataSourceNumber+")");
+        Log.d(TAG, "New HtspSubscriptionDataSource instantiated (" + mDataSourceNumber + ")");
 
         try {
             // Create the buffer, and place the HtspSubscriptionDataSource header in place.
@@ -114,7 +118,7 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
             // enough memory to catch and throw this exception. We do this, as each OOM exception
             // message is unique (lots of #'s of bytes available/used/etc) and means crash reporting
             // doesn't group things nicely.
-            throw new RuntimeException("OutOfMemoryError when allocating HtspSubscriptionDataSource buffer ("+mDataSourceNumber+")", e);
+            throw new RuntimeException("OutOfMemoryError when allocating HtspSubscriptionDataSource buffer (" + mDataSourceNumber + ")", e);
         }
 
         mSubscriber = new Subscriber(mConnection);
@@ -148,7 +152,7 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
     // DataSource Methods
     @Override
     public long open(DataSpec dataSpec) throws IOException {
-        Log.i(TAG, "Opening HtspSubscriptionDataSource ("+mDataSourceNumber+")");
+        Log.i(TAG, "Opening HtspSubscriptionDataSource (" + mDataSourceNumber + ")");
         mDataSpec = dataSpec;
 
         if (!mIsSubscribed) {
@@ -185,11 +189,11 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
         while (mIsOpen && mBuffer.remaining() == 0) {
             try {
                 if (Constants.DEBUG)
-                    Log.v(TAG, "Blocking for more data ("+mDataSourceNumber+")");
+                    Log.v(TAG, "Blocking for more data (" + mDataSourceNumber + ")");
                 Thread.sleep(250);
             } catch (InterruptedException e) {
                 // Ignore.
-                Log.w(TAG, "Caught InterruptedException ("+mDataSourceNumber+")");
+                Log.w(TAG, "Caught InterruptedException (" + mDataSourceNumber + ")");
                 return 0;
             }
         }
@@ -217,14 +221,14 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
 
     @Override
     public void close() throws IOException {
-        Log.i(TAG, "Closing HTSP DataSource ("+mDataSourceNumber+")");
+        Log.i(TAG, "Closing HTSP DataSource (" + mDataSourceNumber + ")");
         mIsOpen = false;
     }
 
     // Subscription.Listener Methods
     @Override
     public void onSubscriptionStart(@NonNull HtspMessage message) {
-        Log.d(TAG, "Received subscriptionStart ("+mDataSourceNumber+")");
+        Log.d(TAG, "Received subscriptionStart (" + mDataSourceNumber + ")");
         serializeMessageToBuffer(message);
     }
 
@@ -245,7 +249,7 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
 
     @Override
     public void onSubscriptionStop(@NonNull HtspMessage message) {
-        Log.d(TAG, "Received subscriptionStop ("+mDataSourceNumber+")");
+        Log.d(TAG, "Received subscriptionStop (" + mDataSourceNumber + ")");
         mIsOpen = false;
     }
 
@@ -351,7 +355,7 @@ public class HtspSubscriptionDataSource extends HtspDataSource implements Subscr
             mBuffer.flip();
         } catch (IOException e) {
             // Ignore?
-            Log.w(TAG, "Caught IOException, ignoring ("+mDataSourceNumber+")", e);
+            Log.w(TAG, "Caught IOException, ignoring (" + mDataSourceNumber + ")", e);
         } finally {
             mLock.unlock();
             try {

@@ -16,12 +16,14 @@
 package ie.macinnes.htsp;
 
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import ie.macinnes.htsp.tasks.Authenticator;
 
 public class SimpleHtspConnection implements HtspMessage.Dispatcher, HtspConnection.Listener {
+
     private static final String TAG = SimpleHtspConnection.class.getSimpleName();
 
     private final HtspMessageSerializer mMessageSerializer;
@@ -161,7 +163,8 @@ public class SimpleHtspConnection implements HtspMessage.Dispatcher, HtspConnect
     }
 
     @Override
-    public void setConnection(@NonNull HtspConnection connection) {}
+    public void setConnection(@NonNull HtspConnection connection) {
+    }
 
     @Override
     public void onConnectionStateChange(@NonNull HtspConnection.State state) {

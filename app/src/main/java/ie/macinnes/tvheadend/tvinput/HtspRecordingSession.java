@@ -23,9 +23,10 @@ import android.media.tv.TvInputService;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,8 +39,10 @@ import ie.macinnes.tvheadend.TvContractUtils;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 class HtspRecordingSession extends TvInputService.RecordingSession {
+
     private static final String TAG = HtspRecordingSession.class.getName();
     private static final int INVALID_DVR_ENTRY_ID = -1;
+
     private static final AtomicInteger sSessionCounter = new AtomicInteger();
 
     private final Context mContext;

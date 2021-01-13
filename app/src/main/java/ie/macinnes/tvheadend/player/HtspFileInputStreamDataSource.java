@@ -31,11 +31,13 @@ import ie.macinnes.htsp.SimpleHtspConnection;
 import ie.macinnes.tvheadend.Application;
 
 public class HtspFileInputStreamDataSource extends HtspDataSource {
+
     private static final String TAG = HtspFileInputStreamDataSource.class.getName();
-    private static final int BUFFER_SIZE = 10*1024*1024;
+    private static final int BUFFER_SIZE = 10 * 1024 * 1024;
     private static final AtomicInteger sDataSourceCount = new AtomicInteger();
 
     public static class Factory extends HtspDataSource.Factory {
+
         private static final String TAG = Factory.class.getName();
 
         private final Context mContext;
@@ -61,7 +63,7 @@ public class HtspFileInputStreamDataSource extends HtspDataSource {
 
         mDataSourceNumber = sDataSourceCount.incrementAndGet();
 
-        Log.d(TAG, "New HtspSubscriptionDataSource instantiated ("+mDataSourceNumber+")");
+        Log.d(TAG, "New HtspSubscriptionDataSource instantiated (" + mDataSourceNumber + ")");
     }
 
     @Override
@@ -90,7 +92,7 @@ public class HtspFileInputStreamDataSource extends HtspDataSource {
     // DataSource Methods
     @Override
     public long open(DataSpec dataSpec) throws IOException {
-        Log.i(TAG, "Opening HTSP DataSource ("+mDataSourceNumber+")");
+        Log.i(TAG, "Opening HTSP DataSource (" + mDataSourceNumber + ")");
 
         mDataSpec = dataSpec;
 
@@ -108,7 +110,7 @@ public class HtspFileInputStreamDataSource extends HtspDataSource {
 
     @Override
     public void close() throws IOException {
-        Log.i(TAG, "Closing HTSP DataSource ("+mDataSourceNumber+")");
+        Log.i(TAG, "Closing HTSP DataSource (" + mDataSourceNumber + ")");
         if (mHtspFileInputStream != null) {
             mHtspFileInputStream.close();
         }

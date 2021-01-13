@@ -18,8 +18,9 @@
 package ie.macinnes.tvheadend.player.reader;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
@@ -33,6 +34,7 @@ import ie.macinnes.htsp.HtspMessage;
 import ie.macinnes.tvheadend.TvhMappings;
 
 class VorbisStreamReader extends PlainStreamReader {
+
     private static final String TAG = VorbisStreamReader.class.getName();
 
     VorbisStreamReader(Context context) {

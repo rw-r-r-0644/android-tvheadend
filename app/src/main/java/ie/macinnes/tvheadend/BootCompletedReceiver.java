@@ -9,6 +9,7 @@ import ie.macinnes.tvheadend.sync.EpgSyncService;
 import ie.macinnes.tvheadend.tvinput.TvInputService;
 
 public class BootCompletedReceiver extends BroadcastReceiver {
+
     private static final String TAG = BootCompletedReceiver.class.getName();
 
     @Override

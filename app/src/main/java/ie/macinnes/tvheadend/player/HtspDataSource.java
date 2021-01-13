@@ -31,6 +31,7 @@ import ie.macinnes.htsp.SimpleHtspConnection;
 import ie.macinnes.htsp.tasks.Subscriber;
 
 public abstract class HtspDataSource implements DataSource, Closeable {
+
     public static final long INVALID_TIMESHIFT_TIME = Subscriber.INVALID_TIMESHIFT_TIME;
 
     public static abstract class Factory implements DataSource.Factory {
@@ -79,10 +80,15 @@ public abstract class HtspDataSource implements DataSource, Closeable {
 
     // Methods used by the player, which need to be passed to the Subscriber
     public abstract void pause();
+
     public abstract void resume();
+
     public abstract long getTimeshiftStartTime();
+
     public abstract long getTimeshiftStartPts();
+
     public abstract long getTimeshiftOffsetPts();
+
     public abstract void setSpeed(int speed);
 
     // DataSource Methods

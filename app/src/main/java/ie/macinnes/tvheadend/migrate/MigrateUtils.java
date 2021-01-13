@@ -26,14 +26,11 @@ import ie.macinnes.tvheadend.account.AccountUtils;
 
 
 public class MigrateUtils {
+
     private static final String TAG = MigrateUtils.class.getName();
     private static final int VERSION_79 = 79;
     private static final int VERSION_80 = 80;
     private static final int VERSION_81 = 81;
-
-    private MigrateUtils() {
-        throw new IllegalAccessError("Utility class");
-    }
 
     public static void doMigrate(Context context) {
         Log.d(TAG, "doMigrate()");
@@ -90,6 +87,7 @@ public class MigrateUtils {
         editor.remove("vlc_deinterlace_method");
         editor.apply();
     }
+
     private static void migrateExoPlayerHttpRemoval(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
@@ -97,5 +95,8 @@ public class MigrateUtils {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("http_stream_profile");
         editor.apply();
+    }
+
+    private MigrateUtils() {
     }
 }

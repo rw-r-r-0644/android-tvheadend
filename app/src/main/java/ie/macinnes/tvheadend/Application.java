@@ -17,7 +17,6 @@
 package ie.macinnes.tvheadend;
 
 import android.content.Context;
-import android.net.TrafficStats;
 import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
@@ -34,6 +33,7 @@ import org.acra.sender.HttpSender;
 import ie.macinnes.tvheadend.migrate.MigrateUtils;
 
 public class Application extends android.app.Application {
+
     private static final String TAG = Application.class.getName();
 
     private RefWatcher mRefWatcher;

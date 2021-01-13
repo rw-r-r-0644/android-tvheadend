@@ -19,18 +19,20 @@ package ie.macinnes.tvheadend.settings;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.preference.PreferenceFragment;
+import android.util.Log;
+
 import androidx.leanback.preference.LeanbackPreferenceFragment;
 import androidx.leanback.preference.LeanbackSettingsFragment;
 import androidx.preference.DialogPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceScreen;
-import android.util.Log;
 
 import ie.macinnes.tvheadend.Constants;
 import ie.macinnes.tvheadend.R;
 
 public class SettingsFragment extends LeanbackSettingsFragment implements DialogPreference.TargetFragment {
+
     private static final String TAG = SettingsFragment.class.getName();
 
     private PreferenceFragment mPreferenceFragment;

@@ -16,21 +16,21 @@
 
 package ie.macinnes.htsp;
 
-import androidx.annotation.NonNull;
 import android.util.Log;
-import android.util.LongSparseArray;
+
+import androidx.annotation.NonNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 
 /**
  * Fetches a file over a HTSP Connection
  */
 public class HtspFileInputStream extends InputStream {
+
     private static final String TAG = HtspFileInputStream.class.getSimpleName();
 
     private final HtspMessage.Dispatcher mDispatcher;
@@ -57,6 +57,7 @@ public class HtspFileInputStream extends InputStream {
     }
 
     // InputStream Methods
+
     /**
      * Reads the next byte of data from the input stream. The value byte is
      * returned as an <code>int</code> in the range <code>0</code> to

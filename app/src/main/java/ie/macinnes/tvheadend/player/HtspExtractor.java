@@ -17,9 +17,10 @@
 package ie.macinnes.tvheadend.player;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.extractor.Extractor;
@@ -41,6 +42,7 @@ import ie.macinnes.tvheadend.player.reader.StreamReadersFactory;
 
 // TODO: Rename HtspSubscriptionExtractor
 class HtspExtractor implements Extractor {
+
     private static final String TAG = HtspExtractor.class.getName();
 
     private class HtspSeekMap implements SeekMap {

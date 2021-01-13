@@ -19,9 +19,6 @@ package ie.macinnes.tvheadend.player.reader;
 import com.google.android.exoplayer2.Format;
 
 class StreamReaderUtils {
-    private StreamReaderUtils() {
-        throw new IllegalAccessError("Utility class");
-    }
 
     static float frameDurationToFrameRate(int frameDuration) {
         float frameRate = Format.NO_VALUE;
@@ -32,5 +29,8 @@ class StreamReaderUtils {
         }
 
         return frameRate;
+    }
+
+    private StreamReaderUtils() {
     }
 }

@@ -23,9 +23,10 @@ import android.content.SharedPreferences;
 import android.media.tv.TvInputInfo;
 import android.media.tv.TvInputManager;
 import android.os.Build;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import android.util.Log;
 
 import ie.macinnes.htsp.HtspConnection;
 import ie.macinnes.htsp.SimpleHtspConnection;
@@ -38,6 +39,7 @@ import ie.macinnes.tvheadend.sync.EpgSyncService;
 
 
 public class TvInputService extends android.media.tv.TvInputService {
+
     private static final String TAG = TvInputService.class.getName();
 
     private SimpleHtspConnection mConnection;
@@ -100,8 +102,7 @@ public class TvInputService extends android.media.tv.TvInputService {
                 tuners = Integer.parseInt(mSharedPreferences.getString(
                         Constants.KEY_TUNER_COUNT,
                         getResources().getString(R.string.pref_default_tuner_count)));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 tuners = 10;
             }
 

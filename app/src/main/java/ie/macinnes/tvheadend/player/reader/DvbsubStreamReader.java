@@ -17,6 +17,7 @@
 package ie.macinnes.tvheadend.player.reader;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
@@ -31,6 +32,7 @@ import ie.macinnes.htsp.HtspMessage;
 import static com.google.android.exoplayer2.C.SELECTION_FLAG_DEFAULT;
 
 class DvbsubStreamReader extends PlainStreamReader {
+
     private static final String TAG = DvbsubStreamReader.class.getName();
 
     DvbsubStreamReader(Context context) {
@@ -43,7 +45,7 @@ class DvbsubStreamReader extends PlainStreamReader {
         final int compositionId = stream.getInteger("composition_id");
         final int ancillaryId = stream.getInteger("ancillary_id");
 
-        List<byte[]> initializationData = Collections.singletonList(new byte[] {
+        List<byte[]> initializationData = Collections.singletonList(new byte[]{
                 (byte) ((compositionId >> 8) & 0xFF),
                 (byte) ((compositionId) & 0xFF),
                 (byte) ((ancillaryId >> 8) & 0xFF),

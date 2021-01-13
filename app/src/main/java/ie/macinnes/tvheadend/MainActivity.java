@@ -24,6 +24,7 @@ import android.os.Build;
 import ie.macinnes.tvheadend.settings.SettingsActivity;
 
 public class MainActivity extends Activity {
+
     private static final String TAG = MainActivity.class.getName();
 
     @Override

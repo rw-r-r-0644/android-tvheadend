@@ -35,6 +35,7 @@ import ie.macinnes.tvheadend.R;
 import ie.macinnes.tvheadend.account.AccountUtils;
 
 public class EpgSyncService extends Service {
+
     private static final String TAG = EpgSyncService.class.getName();
 
     private HandlerThread mHandlerThread;

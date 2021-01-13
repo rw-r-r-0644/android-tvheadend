@@ -22,9 +22,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class MiscUtils {
-    private MiscUtils() {
-        throw new IllegalAccessError("Utility class");
-    }
 
     private static final String TAG = MiscUtils.class.getName();
 
@@ -50,5 +47,8 @@ public class MiscUtils {
                 Constants.PREFERENCE_TVHEADEND, Context.MODE_PRIVATE);
 
         return sharedPreferences.getBoolean(Constants.KEY_SETUP_COMPLETE, false);
+    }
+
+    private MiscUtils() {
     }
 }

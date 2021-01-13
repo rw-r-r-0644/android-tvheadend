@@ -15,8 +15,9 @@
  */
 package ie.macinnes.htsp;
 
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class HtspMessageSerializer implements HtspMessage.Serializer {
+
     private static final String TAG = HtspMessageSerializer.class.getSimpleName();
     private static final boolean DEBUG = false;
 
@@ -94,7 +96,7 @@ public class HtspMessageSerializer implements HtspMessage.Serializer {
         // Drop in the length
         byte[] lengthBytes = long2bin(dataLength);
 
-        for(int i=0; i < lengthBytes.length; i++){
+        for (int i = 0; i < lengthBytes.length; i++) {
             buffer.put(i, lengthBytes[i]);
         }
     }
@@ -301,7 +303,7 @@ public class HtspMessageSerializer implements HtspMessage.Serializer {
         byte[] b = big.toByteArray();
 
         // Reverse the byte order
-        byte b1[] = new byte[b.length];
+        byte[] b1 = new byte[b.length];
         for (int i = 0; i < b.length; i++) {
             b1[i] = b[b.length - 1 - i];
         }
@@ -317,8 +319,8 @@ public class HtspMessageSerializer implements HtspMessage.Serializer {
         return b1;
     }
 
-    private static BigInteger toBigInteger(byte b[]) {
-        byte b1[] = new byte[b.length + 1];
+    private static BigInteger toBigInteger(byte[] b) {
+        byte[] b1 = new byte[b.length + 1];
 
         // Reverse the order
         for (int i = 0; i < b.length; i++) {

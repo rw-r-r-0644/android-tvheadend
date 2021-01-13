@@ -24,13 +24,14 @@ import android.media.tv.TvTrackInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Surface;
 import android.view.View;
 import android.view.accessibility.CaptioningManager;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Player;
@@ -46,7 +47,9 @@ import ie.macinnes.tvheadend.player.TvheadendPlayer;
 
 // TODO: Rename?
 public class HtspSession extends TvInputService.Session implements TvheadendPlayer.Listener {
+
     private static final String TAG = HtspSession.class.getName();
+
     private static final AtomicInteger sSessionCounter = new AtomicInteger();
 
     private final Context mContext;

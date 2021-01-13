@@ -16,8 +16,9 @@
 package ie.macinnes.htsp;
 
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,6 +28,7 @@ import java.nio.channels.SocketChannel;
  * Default implementation tying together most of the other HTSP classes
  */
 public class HtspDataHandler implements HtspConnection.Reader, HtspConnection.Writer, HtspConnection.Listener {
+
     private static final String TAG = HtspDataHandler.class.getSimpleName();
 
     private final HtspMessageSerializer mMessageSerializer;
@@ -59,6 +61,7 @@ public class HtspDataHandler implements HtspConnection.Reader, HtspConnection.Wr
     }
 
     // HtspConnection.Reader Methods
+
     /**
      * Data read off the connection is passed here, the HtspMessageSerializer is used to build
      * HtspMessage  instances which are given to the HtspMessageDispatcher for handling
@@ -150,7 +153,6 @@ public class HtspDataHandler implements HtspConnection.Reader, HtspConnection.Wr
     }
 
     /**
-     *
      * @param socketChannel The SocketChannel to write to
      * @return true on success, false on error
      */

@@ -26,7 +26,6 @@ import android.media.tv.TvTrackInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
@@ -39,11 +38,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -51,21 +51,17 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RendererCapabilities;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.TrackGroup;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DebugTextViewHelper;
 import com.google.android.exoplayer2.ui.SubtitleView;
-import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.io.IOException;
@@ -79,6 +75,7 @@ import ie.macinnes.tvheadend.R;
 import ie.macinnes.tvheadend.TvContractUtils;
 
 public class TvheadendPlayer implements Player.EventListener {
+
     private static final String TAG = TvheadendPlayer.class.getName();
 
     private static final float CAPTION_LINE_HEIGHT_RATIO = 0.0533f;
@@ -91,7 +88,7 @@ public class TvheadendPlayer implements Player.EventListener {
          *
          * @param playWhenReady Whether playback will proceed when ready.
          * @param playbackState One of the {@code STATE} constants defined in the {@link ExoPlayer}
-         *     interface.
+         *                      interface.
          */
         void onPlayerStateChanged(boolean playWhenReady, int playbackState);
 
@@ -246,7 +243,7 @@ public class TvheadendPlayer implements Player.EventListener {
         int speed = (int) rawSpeed;
         int translatedSpeed;
 
-        switch(speed) {
+        switch (speed) {
             case 0:
                 translatedSpeed = 100;
                 break;
@@ -276,7 +273,7 @@ public class TvheadendPlayer implements Player.EventListener {
                 break;
             default:
                 Log.d(TAG, "Unknown speed??? " + rawSpeed);
-            return;
+                return;
         }
 
         Log.d(TAG, "Speed: " + params.getSpeed() + " / " + translatedSpeed);
@@ -298,6 +295,7 @@ public class TvheadendPlayer implements Player.EventListener {
             //mMediaSource.releaseSource();
         }
     }
+
     public long getTimeshiftStartPosition() {
         if (mDataSource != null) {
             long startTime = mDataSource.getTimeshiftStartTime();
@@ -431,8 +429,8 @@ public class TvheadendPlayer implements Player.EventListener {
         TvheadendTrackSelector trackSelector = new TvheadendTrackSelector(mContext);
 
         final boolean enableAudioTunneling = mSharedPreferences.getBoolean(
-            Constants.KEY_AUDIO_TUNNELING_ENABLED,
-            mContext.getResources().getBoolean(R.bool.pref_default_audio_tunneling_enabled)
+                Constants.KEY_AUDIO_TUNNELING_ENABLED,
+                mContext.getResources().getBoolean(R.bool.pref_default_audio_tunneling_enabled)
         );
 
         if (enableAudioTunneling) {
@@ -544,7 +542,7 @@ public class TvheadendPlayer implements Player.EventListener {
             }
         }
 
-        if(hasVideoTrack) {
+        if (hasVideoTrack) {
             disableRadioInfoScreen();
         } else {
             enableRadioInfoScreen();

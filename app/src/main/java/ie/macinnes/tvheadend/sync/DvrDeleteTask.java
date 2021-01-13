@@ -26,11 +26,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.util.Log;
+import android.util.SparseArray;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import android.util.Log;
-import android.util.SparseArray;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,15 +41,19 @@ import ie.macinnes.htsp.HtspMessage;
 import ie.macinnes.htsp.HtspNotConnectedException;
 import ie.macinnes.tvheadend.TvContractUtils;
 
-// TODO: Theres a race between this task, and the EpgSyncTask where any new recordings the
-// EpgSyncTask adds will not exist until after we try and process them here. This will need some
-// thought to fix....
-
+/**
+ * TODO There is a race between this task, and the EpgSyncTask where any new recordings the
+ * EpgSyncTask adds will not exist until after we try and process them here. This will need some
+ * thought to fix....
+ */
 public class DvrDeleteTask implements HtspMessage.Listener {
+
     private static final String TAG = DvrDeleteTask.class.getName();
-    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(new String[]{
-            "dvrEntryAdd", "dvrEntryUpdate", "dvrEntryDelete",
-    }));
+
+    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(
+            "dvrEntryAdd",
+            "dvrEntryUpdate",
+            "dvrEntryDelete"));
 
     private final Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
     private final HandlerThread mHandlerThread;
@@ -144,7 +149,7 @@ public class DvrDeleteTask implements HtspMessage.Listener {
             String[] projection = {TvContract.RecordedPrograms._ID, TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
 
             // TODO: Handle when more than 1, or 0 results come back
-            try (Cursor cursor = mContentResolver.query(recordedProgramUri, projection, null,null, null)) {
+            try (Cursor cursor = mContentResolver.query(recordedProgramUri, projection, null, null, null)) {
                 while (cursor != null && cursor.moveToNext()) {
                     // If we find a match, the entry still exists - bail.
                     return;

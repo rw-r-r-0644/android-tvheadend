@@ -17,8 +17,9 @@
 package ie.macinnes.tvheadend.player.reader;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
@@ -32,6 +33,7 @@ import java.util.List;
 import ie.macinnes.htsp.HtspMessage;
 
 class H265StreamReader extends PlainStreamReader {
+
     private static final String TAG = H265StreamReader.class.getName();
 
     H265StreamReader(Context context) {

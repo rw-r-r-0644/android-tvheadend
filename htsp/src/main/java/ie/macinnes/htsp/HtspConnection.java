@@ -17,8 +17,9 @@ package ie.macinnes.htsp;
 
 import android.net.TrafficStats;
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -39,6 +40,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Main HTSP Connection class
  */
 public class HtspConnection implements Runnable {
+
     private static final String TAG = HtspConnection.class.getSimpleName();
 
     /**
@@ -156,7 +158,7 @@ public class HtspConnection implements Runnable {
         FAILED
     }
 
-    private ConnectionDetails mConnectionDetails;
+    private final ConnectionDetails mConnectionDetails;
     private final Reader mReader;
     private final Writer mWriter;
 

@@ -20,11 +20,8 @@ import android.media.tv.TvContract;
 import android.util.SparseArray;
 
 public class DvbMappings {
-    private DvbMappings() {
-        throw new IllegalAccessError("Utility class");
-    }
 
-    public static final SparseArray<String> ProgramGenre = new SparseArray<String>() {
+    public static final SparseArray<String> PROGRAM_GENRE = new SparseArray<String>() {
         {
             append(16, TvContract.Programs.Genres.encode(TvContract.Programs.Genres.MOVIES));
             append(17, TvContract.Programs.Genres.encode(TvContract.Programs.Genres.MOVIES));
@@ -96,4 +93,7 @@ public class DvbMappings {
             append(167, TvContract.Programs.Genres.encode(TvContract.Programs.Genres.LIFE_STYLE));
         }
     };
+
+    private DvbMappings() {
+    }
 }

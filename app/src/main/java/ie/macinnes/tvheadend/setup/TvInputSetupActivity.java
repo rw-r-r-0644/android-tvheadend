@@ -24,13 +24,14 @@ import android.content.Intent;
 import android.media.tv.TvInputInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.leanback.app.GuidedStepSupportFragment;
 import androidx.leanback.widget.GuidanceStylist;
 import androidx.leanback.widget.GuidedAction;
 import androidx.leanback.widget.GuidedActionsStylist;
-import androidx.fragment.app.FragmentActivity;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,7 @@ import ie.macinnes.tvheadend.sync.EpgSyncService;
 import ie.macinnes.tvheadend.sync.EpgSyncTask;
 
 public class TvInputSetupActivity extends FragmentActivity {
+
     private static final String TAG = TvInputSetupActivity.class.getName();
 
     @Override
@@ -89,7 +91,7 @@ public class TvInputSetupActivity extends FragmentActivity {
 
             Account[] accounts = AccountUtils.getAllAccounts(getActivity());
 
-            Log.d(TAG, "Checking " + Integer.toString(accounts.length) + " accounts");
+            Log.d(TAG, "Checking " + accounts.length + " accounts");
 
             for (Account account : accounts) {
                 Log.d(TAG, "Checking Account: " + account.name);

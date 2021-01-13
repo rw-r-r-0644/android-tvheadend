@@ -32,7 +32,7 @@ import ie.macinnes.tvheadend.sync.EpgSyncService;
 import ie.macinnes.tvheadend.tvinput.TvInputService;
 
 public class DevTestActivity extends Activity {
-    private static final String TAG = DevTestActivity.class.getName();
+
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private AccountManager mAccountManager;
@@ -82,7 +82,7 @@ public class DevTestActivity extends Activity {
 
         Account[] accounts = AccountUtils.getAllAccounts(this);
 
-        appendDebugOutput("Number of Accounts: " + Integer.toString(accounts.length));
+        appendDebugOutput("Number of Accounts: " + accounts.length);
 
         for (Account account : accounts) {
             appendDebugOutput("---");

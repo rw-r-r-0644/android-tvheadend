@@ -29,6 +29,7 @@ import android.widget.Toast;
 import ie.macinnes.tvheadend.R;
 
 class Authenticator extends AbstractAccountAuthenticator {
+
     private static final String TAG = Authenticator.class.getName();
 
     private final Context mContext;

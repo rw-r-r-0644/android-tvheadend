@@ -18,10 +18,7 @@ package ie.macinnes.tvheadend;
 import android.media.tv.TvContract;
 
 public class Constants {
-    private Constants() {
-        throw new IllegalAccessError("Utility class");
-    }
-    
+
     // Use sparingly, i.e. for wrapping log messages that would otherwise spam during normal
     // operation. Even Log.v/Log.v logs will slow things down if called enough.
     public static final boolean DEBUG = false;
@@ -66,4 +63,8 @@ public class Constants {
     public static final String KEY_EPG_LAST_UPDATE_ENABLED = "epg_last_update_enabled";
     public static final String KEY_EPG_LAST_UPDATE = "EPG_LAST_UPDATE"; // Todo: This name is confusing...
     public static final String KEY_EPG_DEFAULT_POSTER_ART_ENABLED = "epg_default_poster_art_enabled";
+
+    private Constants() {
+    }
+
 }

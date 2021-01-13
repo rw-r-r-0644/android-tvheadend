@@ -16,10 +16,12 @@
 package ie.macinnes.htsp.tasks;
 
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -33,7 +35,7 @@ import ie.macinnes.htsp.HtspNotConnectedException;
 
 /**
  * Handles Authentication on a HTSP Connection
- *
+ * <p>
  * * Waits for State==CONNECTED, adds itself as a Message listener
  * * Sends a Hello request
  * * Receives a Hello response with challenge etc
@@ -42,11 +44,12 @@ import ie.macinnes.htsp.HtspNotConnectedException;
  * * Removes itself as a Message listener
  */
 public class Authenticator implements HtspMessage.Listener, HtspConnection.Listener {
+
     private static final String TAG = Authenticator.class.getSimpleName();
 
-    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(new String[]{
-            "hello", "authenticate"
-    }));
+    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(
+            "hello",
+            "authenticate"));
 
     /**
      * A listener for Authentication state events
@@ -75,9 +78,9 @@ public class Authenticator implements HtspMessage.Listener, HtspConnection.Liste
     }
 
     private final HtspMessage.Dispatcher mDispatcher;
-    private State mState = State.IDLE;
+    private final State mState = State.IDLE;
 
-    private HtspConnection.ConnectionDetails mConnectionDetails;
+    private final HtspConnection.ConnectionDetails mConnectionDetails;
 
     public Authenticator(@NonNull HtspMessage.Dispatcher dispatcher, @NonNull HtspConnection.ConnectionDetails connectionDetails) {
         mDispatcher = dispatcher;
@@ -247,12 +250,8 @@ public class Authenticator implements HtspMessage.Listener, HtspConnection.Liste
             throw new RuntimeException("Your platform doesn't support SHA-1");
         }
 
-        try {
-            md.update(mConnectionDetails.getPassword().getBytes("utf8"));
-            md.update(challenge);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Your platform doesn't support UTF-8");
-        }
+        md.update(mConnectionDetails.getPassword().getBytes(StandardCharsets.UTF_8));
+        md.update(challenge);
 
         return md.digest();
     }

@@ -31,10 +31,11 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.RemoteException;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import android.util.Log;
 import android.util.SparseArray;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,13 +62,21 @@ import ie.macinnes.tvheadend.R;
 import ie.macinnes.tvheadend.TvContractUtils;
 
 public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener {
+
     private static final String TAG = EpgSyncTask.class.getSimpleName();
-    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(new String[]{
-            "channelAdd", "channelUpdate", "channelDelete",
-            "dvrEntryAdd", "dvrEntryUpdate", "dvrEntryDelete",
-            "eventAdd", "eventUpdate", "eventDelete",
-            "initialSyncCompleted",
-    }));
+
+    private static final Set<String> HANDLED_METHODS = new HashSet<>(Arrays.asList(
+            "channelAdd",
+            "channelUpdate",
+            "channelDelete",
+            "dvrEntryAdd",
+            "dvrEntryUpdate",
+            "dvrEntryDelete",
+            "eventAdd",
+            "eventUpdate",
+            "eventDelete",
+            "initialSyncCompleted"));
+
     private static final boolean IS_BRAVIA = Build.MODEL.contains("BRAVIA");
 
     // TODO: Move all these HTSP Lib, Modeled after TvContract.Programs.COLUMN_CHANNEL_ID etc?
@@ -101,7 +110,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
     private static final String EVENT_ID_KEY = "eventId";
 
-    private static final int TWO_HOURS = 2*60*60;
+    private static final int TWO_HOURS = 2 * 60 * 60;
 
     /**
      * A listener for EpgSync events
@@ -383,8 +392,8 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             mPendingChannelOps.add(new PendingChannelAddUpdate(
                     channelId, channelNumber,
                     ContentProviderOperation.newInsert(TvContract.Channels.CONTENT_URI)
-                        .withValues(values)
-                        .build()
+                            .withValues(values)
+                            .build()
             ));
         } else {
             // Update the channel
@@ -456,7 +465,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (operations.size() != results.length) {
             Log.e(TAG, "Failed to flush pending channels, discarding and moving on, batch size " +
-                       "does not match resultset size");
+                    "does not match resultset size");
 
             // Reset the pending operations list
             mCompletedChannelOps += mPendingChannelOps.size();
@@ -623,7 +632,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (message.containsKey(PROGRAM_CONTENT_TYPE_KEY)) {
             values.put(TvContract.RecordedPrograms.COLUMN_CANONICAL_GENRE,
-                    DvbMappings.ProgramGenre.get(message.getInteger(DVR_ENTRY_CONTENT_TYPE_KEY)));
+                    DvbMappings.PROGRAM_GENRE.get(message.getInteger(DVR_ENTRY_CONTENT_TYPE_KEY)));
         }
 
         return values;
@@ -789,7 +798,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (message.containsKey(PROGRAM_CONTENT_TYPE_KEY)) {
             values.put(TvContract.Programs.COLUMN_CANONICAL_GENRE,
-                    DvbMappings.ProgramGenre.get(message.getInteger(PROGRAM_CONTENT_TYPE_KEY)));
+                    DvbMappings.PROGRAM_GENRE.get(message.getInteger(PROGRAM_CONTENT_TYPE_KEY)));
         }
 
         if (message.containsKey(PROGRAM_AGE_RATING_KEY)) {
@@ -835,7 +844,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
                     Constants.KEY_EPG_DEFAULT_POSTER_ART_ENABLED,
                     mContext.getResources().getBoolean(R.bool.pref_default_epg_default_poster_art_enabled)
             );
-            if(defaultPosterArtEnabled) {
+            if (defaultPosterArtEnabled) {
                 values.put(TvContract.Programs.COLUMN_POSTER_ART_URI, "android.resource://" + BuildConfig.APPLICATION_ID + "/" + R.drawable.default_event_icon);
             }
         }
@@ -914,7 +923,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (operations.size() != results.length) {
             Log.e(TAG, "Failed to flush pending events, discarding and moving on, batch size " +
-                       "does not match resultset size");
+                    "does not match resultset size");
 
             // Reset the pending operations list
             mCompletedProgramOps += mPendingProgramOps.size();

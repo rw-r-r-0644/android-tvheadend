@@ -18,6 +18,7 @@
 package ie.macinnes.tvheadend.player.reader;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.C;
@@ -36,6 +37,7 @@ import ie.macinnes.htsp.HtspMessage;
 import ie.macinnes.tvheadend.Application;
 
 class TextsubStreamReader implements StreamReader {
+
     private static final String TAG = TextsubStreamReader.class.getName();
 
     /**
@@ -45,7 +47,7 @@ class TextsubStreamReader implements StreamReader {
      * <p>
      * Equivalent to the UTF-8 string: "1\n00:00:00,000 --> 00:00:00,000\n".
      */
-    private static final byte[] SUBRIP_PREFIX = new byte[] {49, 10, 48, 48, 58, 48, 48, 58, 48, 48,
+    private static final byte[] SUBRIP_PREFIX = new byte[]{49, 10, 48, 48, 58, 48, 48, 58, 48, 48,
             44, 48, 48, 48, 32, 45, 45, 62, 32, 48, 48, 58, 48, 48, 58, 48, 48, 44, 48, 48, 48, 10};
     /**
      * A special end timecode indicating that a subtitle should be displayed until the next subtitle,
@@ -54,7 +56,7 @@ class TextsubStreamReader implements StreamReader {
      * Equivalent to the UTF-8 string: "            ".
      */
     private static final byte[] SUBRIP_TIMECODE_EMPTY =
-            new byte[] {32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
+            new byte[]{32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
     /**
      * The byte offset of the end timecode in {@link #SUBRIP_PREFIX}.
      */

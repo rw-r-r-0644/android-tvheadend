@@ -16,9 +16,10 @@
 package ie.macinnes.htsp;
 
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.util.LongSparseArray;
+
+import androidx.annotation.NonNull;
 
 import java.util.Queue;
 import java.util.Set;
@@ -30,11 +31,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * HtspMessageDispatchers handle taking a message in, and figuring out who needs a copy of it. It's
  * here we'll implement filtering of messages (e.g. Muxpkt's should only go to 1 place, the
  * subscriber of that particular subscription ID etc).
- *
+ * <p>
  * Subinterfaces of HtspMessage.Listener will be used to provide for some of this more advanced
  * dispatching functionality later on, as it becomes required.
  */
 public class HtspMessageDispatcher implements HtspMessage.DispatcherInternal, HtspMessage.Listener, HtspConnection.Listener {
+
     private static final String TAG = HtspMessageDispatcher.class.getSimpleName();
     private static final AtomicInteger sSequence = new AtomicInteger();
 
@@ -108,7 +110,7 @@ public class HtspMessageDispatcher implements HtspMessage.DispatcherInternal, Ht
 
         // If necessary, inject a sequence number
         if (!message.containsKey("seq")) {
-            seq = (long) sSequence.getAndIncrement();
+            seq = sSequence.getAndIncrement();
             message.put("seq", seq);
         } else {
             seq = message.getLong("seq");
