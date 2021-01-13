@@ -113,6 +113,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                     .descriptionEditInputType(InputType.TYPE_CLASS_NUMBER)
                     .descriptionInputType(InputType.TYPE_CLASS_NUMBER)
                     .descriptionEditable(true)
+                    .description(Constants.DEFAULT_HTSP_PORT)
                     .build();
 
             actions.add(action);

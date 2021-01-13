@@ -26,6 +26,7 @@ public class Constants {
     // Misc Things
     public static final String CONTENT_AUTHORITY = TvContractCompat.AUTHORITY;
     public static final String ACCOUNT_TYPE = "ie.macinnes.tvheadend";
+    public static final String DEFAULT_HTSP_PORT = "9982";
 
     // Misc Preference Keys and Values
     public static final String KEY_SETUP_COMPLETE = "setup_complete";
