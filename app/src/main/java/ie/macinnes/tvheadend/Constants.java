@@ -26,7 +26,6 @@ public class Constants {
     // Misc Things
     public static final String CONTENT_AUTHORITY = TvContractCompat.AUTHORITY;
     public static final String ACCOUNT_TYPE = "ie.macinnes.tvheadend";
-    public static final int MIGRATE_VERSION = 81;
 
     // Preferences Files and Keys
     public static final String PREFERENCE_TVHEADEND = "tvheadend";
@@ -50,7 +49,6 @@ public class Constants {
     public static final String KEY_HTSP_STREAM_PROFILE = "htsp_stream_profile";
 
     // Bundle and Preference Keys
-    public static final String KEY_APP_VERSION = "APP-VERSION";
     public static final String KEY_HOSTNAME = "HOSTNAME";
     public static final String KEY_HTSP_PORT = "HTSP-PORT";
     public static final String KEY_USERNAME = "USERNAME";

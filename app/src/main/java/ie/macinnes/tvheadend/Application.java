@@ -30,8 +30,6 @@ import org.acra.config.ACRAConfigurationException;
 import org.acra.config.ConfigurationBuilder;
 import org.acra.sender.HttpSender;
 
-import ie.macinnes.tvheadend.migrate.MigrateUtils;
-
 public class Application extends android.app.Application {
 
     private static final String TAG = Application.class.getName();
@@ -75,9 +73,6 @@ public class Application extends android.app.Application {
                 Log.e(TAG, "Failed to init ACRA", e);
             }
         }
-
-        // TODO: Find a better (+ out of UI thread) way to do this.
-        MigrateUtils.doMigrate(getBaseContext());
 
         if (BuildConfig.DEBUG) {
             // StrictMode Setup
