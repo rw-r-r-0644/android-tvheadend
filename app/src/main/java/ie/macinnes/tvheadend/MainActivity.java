@@ -17,9 +17,10 @@ package ie.macinnes.tvheadend;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.tv.TvContract;
 import android.media.tv.TvInputManager;
 import android.os.Build;
+
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import ie.macinnes.tvheadend.settings.SettingsActivity;
 
@@ -39,8 +40,8 @@ public class MainActivity extends Activity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 i = new Intent(TvInputManager.ACTION_SETUP_INPUTS);
             } else {
-                i = new Intent(Intent.ACTION_VIEW, TvContract.Channels.CONTENT_URI);
-                i.setData(TvContract.buildChannelsUriForInput(TvContractUtils.getInputId()));
+                i = new Intent(Intent.ACTION_VIEW, TvContractCompat.Channels.CONTENT_URI);
+                i.setData(TvContractCompat.buildChannelsUriForInput(TvContractUtils.getInputId()));
             }
         }
 

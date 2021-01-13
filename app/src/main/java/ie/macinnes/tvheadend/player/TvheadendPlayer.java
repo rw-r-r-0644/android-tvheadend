@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.PlaybackParams;
-import android.media.tv.TvContract;
 import android.media.tv.TvTrackInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -39,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -563,7 +563,7 @@ public class TvheadendPlayer implements Player.EventListener {
             ImageView radioChannelIcon = mRadioInfoView.findViewById(R.id.radio_channel_icon);
 
             long androidChannelId = TvContractUtils.getChannelId(mContext, Integer.parseInt(mCurrentChannelUri.getPath().substring(1)));
-            Uri channelIconUri = TvContract.buildChannelLogoUri(androidChannelId);
+            Uri channelIconUri = TvContractCompat.buildChannelLogoUri(androidChannelId);
 
             InputStream is = mContext.getContentResolver().openInputStream(channelIconUri);
 

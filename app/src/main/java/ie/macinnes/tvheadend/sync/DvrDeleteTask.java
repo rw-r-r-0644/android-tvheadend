@@ -20,7 +20,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.media.tv.TvContract;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -32,6 +31,7 @@ import android.util.SparseArray;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -78,7 +78,7 @@ public class DvrDeleteTask implements HtspMessage.Listener {
         mRecordedProgramUriMap = new SparseArray<>();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mContentResolver.registerContentObserver(TvContract.RecordedPrograms.CONTENT_URI, true, mRecordedProgramContentObserver);
+            mContentResolver.registerContentObserver(TvContractCompat.RecordedPrograms.CONTENT_URI, true, mRecordedProgramContentObserver);
         }
     }
 
@@ -146,7 +146,7 @@ public class DvrDeleteTask implements HtspMessage.Listener {
                 return;
             }
 
-            String[] projection = {TvContract.RecordedPrograms._ID, TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
+            String[] projection = {TvContractCompat.RecordedPrograms._ID, TvContractCompat.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
 
             // TODO: Handle when more than 1, or 0 results come back
             try (Cursor cursor = mContentResolver.query(recordedProgramUri, projection, null, null, null)) {

@@ -25,7 +25,6 @@ import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteFullException;
 import android.media.tv.TvContentRating;
-import android.media.tv.TvContract;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -36,6 +35,7 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,7 +79,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
     private static final boolean IS_BRAVIA = Build.MODEL.contains("BRAVIA");
 
-    // TODO: Move all these HTSP Lib, Modeled after TvContract.Programs.COLUMN_CHANNEL_ID etc?
+    // TODO: Move all these HTSP Lib, Modeled after TvContractCompat.Programs.COLUMN_CHANNEL_ID etc?
     private static final String CHANNEL_ID_KEY = "channelId";
     private static final String CHANNEL_NUMBER_KEY = "channelNumber";
     private static final String CHANNEL_NUMBER_MINOR_KEY = "channelNumberMinor";
@@ -356,25 +356,25 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     private ContentValues channelToContentValues(@NonNull HtspMessage message) {
         ContentValues values = new ContentValues();
 
-        values.put(TvContract.Channels.COLUMN_INPUT_ID, TvContractUtils.getInputId());
-        values.put(TvContract.Channels.COLUMN_TYPE, TvContract.Channels.TYPE_OTHER);
-        values.put(TvContract.Channels.COLUMN_ORIGINAL_NETWORK_ID, message.getInteger(CHANNEL_ID_KEY));
+        values.put(TvContractCompat.Channels.COLUMN_INPUT_ID, TvContractUtils.getInputId());
+        values.put(TvContractCompat.Channels.COLUMN_TYPE, TvContractCompat.Channels.TYPE_OTHER);
+        values.put(TvContractCompat.Channels.COLUMN_ORIGINAL_NETWORK_ID, message.getInteger(CHANNEL_ID_KEY));
 
         if (message.containsKey(CHANNEL_NUMBER_KEY) && message.containsKey(CHANNEL_NUMBER_MINOR_KEY)) {
             final int channelNumber = message.getInteger(CHANNEL_NUMBER_KEY);
             final int channelNumberMinor = message.getInteger(CHANNEL_NUMBER_MINOR_KEY);
-            values.put(TvContract.Channels.COLUMN_DISPLAY_NUMBER, channelNumber + "." + channelNumberMinor);
+            values.put(TvContractCompat.Channels.COLUMN_DISPLAY_NUMBER, channelNumber + "." + channelNumberMinor);
         } else if (message.containsKey(CHANNEL_NUMBER_KEY)) {
             final int channelNumber = message.getInteger(CHANNEL_NUMBER_KEY);
-            values.put(TvContract.Channels.COLUMN_DISPLAY_NUMBER, String.valueOf(channelNumber));
+            values.put(TvContractCompat.Channels.COLUMN_DISPLAY_NUMBER, String.valueOf(channelNumber));
         }
 
         if (message.containsKey(CHANNEL_NAME_KEY)) {
-            values.put(TvContract.Channels.COLUMN_DISPLAY_NAME, message.getString(CHANNEL_NAME_KEY));
+            values.put(TvContractCompat.Channels.COLUMN_DISPLAY_NAME, message.getString(CHANNEL_NAME_KEY));
         }
 
         // TODO
-//        values.put(TvContract.Channels.COLUMN_INTERNAL_PROVIDER_DATA, accountName);
+//        values.put(TvContractCompat.Channels.COLUMN_INTERNAL_PROVIDER_DATA, accountName);
 
         return values;
     }
@@ -391,7 +391,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             final int channelNumber = message.getInteger(CHANNEL_NUMBER_KEY);
             mPendingChannelOps.add(new PendingChannelAddUpdate(
                     channelId, channelNumber,
-                    ContentProviderOperation.newInsert(TvContract.Channels.CONTENT_URI)
+                    ContentProviderOperation.newInsert(TvContractCompat.Channels.CONTENT_URI)
                             .withValues(values)
                             .build()
             ));
@@ -503,7 +503,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             }
 
             final Uri channelLogoSourceUri = pendingChannelLogoFetch.logoUri;
-            final Uri channelLogoDestUri = TvContract.buildChannelLogoUri(androidChannelId);
+            final Uri channelLogoDestUri = TvContractCompat.buildChannelLogoUri(androidChannelId);
 
             InputStream is = null;
             OutputStream os = null;
@@ -576,10 +576,10 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     private ContentValues dvrEntryToContentValues(@NonNull HtspMessage message) {
         ContentValues values = new ContentValues();
 
-        values.put(TvContract.RecordedPrograms.COLUMN_INPUT_ID, TvContractUtils.getInputId());
-        values.put(TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA, String.valueOf(message.getInteger(DVR_ENTRY_ID_KEY)));
+        values.put(TvContractCompat.RecordedPrograms.COLUMN_INPUT_ID, TvContractUtils.getInputId());
+        values.put(TvContractCompat.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA, String.valueOf(message.getInteger(DVR_ENTRY_ID_KEY)));
 
-        values.put(TvContract.RecordedPrograms.COLUMN_CHANNEL_ID, TvContractUtils.getChannelId(mContext, message.getInteger(DVR_ENTRY_CHANNEL_KEY)));
+        values.put(TvContractCompat.RecordedPrograms.COLUMN_CHANNEL_ID, TvContractUtils.getChannelId(mContext, message.getInteger(DVR_ENTRY_CHANNEL_KEY)));
 
         // COLUMN_TITLE, COLUMN_EPISODE_TITLE, and COLUMN_SHORT_DESCRIPTION are used in the
         // Live Channels app EPG Grid. COLUMN_LONG_DESCRIPTION appears unused.
@@ -587,20 +587,20 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (message.containsKey(PROGRAM_TITLE_KEY)) {
             // The title of this TV program.
-            values.put(TvContract.RecordedPrograms.COLUMN_TITLE, message.getString(DVR_ENTRY_TITLE_KEY));
+            values.put(TvContractCompat.RecordedPrograms.COLUMN_TITLE, message.getString(DVR_ENTRY_TITLE_KEY));
         }
 
         if (message.containsKey(PROGRAM_EPISODE_TITLE_KEY)) {
             // The episode title of this TV program for episodic TV shows.
-            values.put(TvContract.RecordedPrograms.COLUMN_EPISODE_TITLE, message.getString(DVR_ENTRY_SUBTITLE_KEY));
+            values.put(TvContractCompat.RecordedPrograms.COLUMN_EPISODE_TITLE, message.getString(DVR_ENTRY_SUBTITLE_KEY));
         }
 
         if (message.containsKey(PROGRAM_START_TIME_KEY)) {
-            values.put(TvContract.RecordedPrograms.COLUMN_START_TIME_UTC_MILLIS, message.getLong(DVR_ENTRY_START_KEY) * 1000);
+            values.put(TvContractCompat.RecordedPrograms.COLUMN_START_TIME_UTC_MILLIS, message.getLong(DVR_ENTRY_START_KEY) * 1000);
         }
 
         if (message.containsKey(PROGRAM_FINISH_TIME_KEY)) {
-            values.put(TvContract.RecordedPrograms.COLUMN_END_TIME_UTC_MILLIS, message.getLong(DVR_ENTRY_STOP_KEY) * 1000);
+            values.put(TvContractCompat.RecordedPrograms.COLUMN_END_TIME_UTC_MILLIS, message.getLong(DVR_ENTRY_STOP_KEY) * 1000);
         }
 
         HtspMessage[] files = message.getHtspMessageArray("files", null);
@@ -626,12 +626,12 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             if (recordingStart > 0 && recordingStop > 0) {
                 // TODO: Duration is meant to be an int...
                 long duration = recordingStop - recordingStart;
-                values.put(TvContract.RecordedPrograms.COLUMN_RECORDING_DURATION_MILLIS, duration * 1000);
+                values.put(TvContractCompat.RecordedPrograms.COLUMN_RECORDING_DURATION_MILLIS, duration * 1000);
             }
         }
 
         if (message.containsKey(PROGRAM_CONTENT_TYPE_KEY)) {
-            values.put(TvContract.RecordedPrograms.COLUMN_CANONICAL_GENRE,
+            values.put(TvContractCompat.RecordedPrograms.COLUMN_CANONICAL_GENRE,
                     DvbMappings.PROGRAM_GENRE.get(message.getInteger(DVR_ENTRY_CONTENT_TYPE_KEY)));
         }
 
@@ -661,7 +661,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
                 Log.v(TAG, "Insert dvrEntry " + dvrEntryId);
             mPendingRecordedProgramOps.add(new PendingDvrEntryAddUpdate(
                     dvrEntryId,
-                    ContentProviderOperation.newInsert(TvContract.RecordedPrograms.CONTENT_URI)
+                    ContentProviderOperation.newInsert(TvContractCompat.RecordedPrograms.CONTENT_URI)
                             .withValues(values)
                             .build()
             ));
@@ -765,8 +765,8 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     private ContentValues eventToContentValues(@NonNull HtspMessage message) {
         ContentValues values = new ContentValues();
 
-        values.put(TvContract.Programs.COLUMN_CHANNEL_ID, TvContractUtils.getChannelId(mContext, message.getInteger(CHANNEL_ID_KEY)));
-        values.put(TvContract.Programs.COLUMN_INTERNAL_PROVIDER_DATA, String.valueOf(message.getInteger(EVENT_ID_KEY)));
+        values.put(TvContractCompat.Programs.COLUMN_CHANNEL_ID, TvContractUtils.getChannelId(mContext, message.getInteger(CHANNEL_ID_KEY)));
+        values.put(TvContractCompat.Programs.COLUMN_INTERNAL_PROVIDER_DATA, String.valueOf(message.getInteger(EVENT_ID_KEY)));
 
         // COLUMN_TITLE, COLUMN_EPISODE_TITLE, and COLUMN_SHORT_DESCRIPTION are used in the
         // Live Channels app EPG Grid. COLUMN_LONG_DESCRIPTION appears unused.
@@ -774,30 +774,30 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (message.containsKey(PROGRAM_TITLE_KEY)) {
             // The title of this TV program.
-            values.put(TvContract.Programs.COLUMN_TITLE, message.getString(PROGRAM_TITLE_KEY));
+            values.put(TvContractCompat.Programs.COLUMN_TITLE, message.getString(PROGRAM_TITLE_KEY));
         }
 
         if (message.containsKey(PROGRAM_EPISODE_TITLE_KEY)) {
             // The episode title of this TV program for episodic TV shows.
-            values.put(TvContract.Programs.COLUMN_EPISODE_TITLE, message.getString(PROGRAM_EPISODE_TITLE_KEY));
+            values.put(TvContractCompat.Programs.COLUMN_EPISODE_TITLE, message.getString(PROGRAM_EPISODE_TITLE_KEY));
         }
 
         if (message.containsKey(PROGRAM_SUMMARY_KEY) && message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
             // If we have both summary and description... use them both
-            values.put(TvContract.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
-            values.put(TvContract.Programs.COLUMN_LONG_DESCRIPTION, message.getString(PROGRAM_DESCRIPTION_KEY));
+            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
+            values.put(TvContractCompat.Programs.COLUMN_LONG_DESCRIPTION, message.getString(PROGRAM_DESCRIPTION_KEY));
 
         } else if (message.containsKey(PROGRAM_SUMMARY_KEY) && !message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
             // If we have only summary, use it.
-            values.put(TvContract.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
+            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
 
         } else if (!message.containsKey(PROGRAM_SUMMARY_KEY) && message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
             // If we have only description, use it.
-            values.put(TvContract.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_DESCRIPTION_KEY));
+            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_DESCRIPTION_KEY));
         }
 
         if (message.containsKey(PROGRAM_CONTENT_TYPE_KEY)) {
-            values.put(TvContract.Programs.COLUMN_CANONICAL_GENRE,
+            values.put(TvContractCompat.Programs.COLUMN_CANONICAL_GENRE,
                     DvbMappings.PROGRAM_GENRE.get(message.getInteger(PROGRAM_CONTENT_TYPE_KEY)));
         }
 
@@ -805,47 +805,47 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             final int ageRating = message.getInteger(PROGRAM_AGE_RATING_KEY);
             if (ageRating >= 4 && ageRating <= 18) {
                 TvContentRating rating = TvContentRating.createRating("com.android.tv", "DVB", "DVB_" + ageRating);
-                values.put(TvContract.Programs.COLUMN_CONTENT_RATING, rating.flattenToString());
+                values.put(TvContractCompat.Programs.COLUMN_CONTENT_RATING, rating.flattenToString());
             }
         }
 
         if (message.containsKey(PROGRAM_START_TIME_KEY)) {
-            values.put(TvContract.Programs.COLUMN_START_TIME_UTC_MILLIS, message.getLong(PROGRAM_START_TIME_KEY) * 1000);
+            values.put(TvContractCompat.Programs.COLUMN_START_TIME_UTC_MILLIS, message.getLong(PROGRAM_START_TIME_KEY) * 1000);
         }
 
         if (message.containsKey(PROGRAM_FINISH_TIME_KEY)) {
-            values.put(TvContract.Programs.COLUMN_END_TIME_UTC_MILLIS, message.getLong(PROGRAM_FINISH_TIME_KEY) * 1000);
+            values.put(TvContractCompat.Programs.COLUMN_END_TIME_UTC_MILLIS, message.getLong(PROGRAM_FINISH_TIME_KEY) * 1000);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (message.containsKey(PROGRAM_SEASON_NUMBER_KEY)) {
-                values.put(TvContract.Programs.COLUMN_SEASON_DISPLAY_NUMBER, message.getInteger(PROGRAM_SEASON_NUMBER_KEY));
+                values.put(TvContractCompat.Programs.COLUMN_SEASON_DISPLAY_NUMBER, message.getInteger(PROGRAM_SEASON_NUMBER_KEY));
             }
 
             if (message.containsKey(PROGRAM_EPISODE_NUMBER_KEY)) {
-                values.put(TvContract.Programs.COLUMN_EPISODE_DISPLAY_NUMBER, message.getInteger(PROGRAM_EPISODE_NUMBER_KEY));
+                values.put(TvContractCompat.Programs.COLUMN_EPISODE_DISPLAY_NUMBER, message.getInteger(PROGRAM_EPISODE_NUMBER_KEY));
             }
         } else {
             if (message.containsKey(PROGRAM_SEASON_NUMBER_KEY)) {
                 //noinspection deprecation
-                values.put(TvContract.Programs.COLUMN_SEASON_NUMBER, message.getInteger(PROGRAM_SEASON_NUMBER_KEY));
+                values.put(TvContractCompat.Programs.COLUMN_SEASON_NUMBER, message.getInteger(PROGRAM_SEASON_NUMBER_KEY));
             }
 
             if (message.containsKey(PROGRAM_EPISODE_NUMBER_KEY)) {
                 //noinspection deprecation
-                values.put(TvContract.Programs.COLUMN_EPISODE_NUMBER, message.getInteger(PROGRAM_EPISODE_NUMBER_KEY));
+                values.put(TvContractCompat.Programs.COLUMN_EPISODE_NUMBER, message.getInteger(PROGRAM_EPISODE_NUMBER_KEY));
             }
         }
 
         if (message.containsKey(PROGRAM_IMAGE)) {
-            values.put(TvContract.Programs.COLUMN_POSTER_ART_URI, message.getString(PROGRAM_IMAGE));
+            values.put(TvContractCompat.Programs.COLUMN_POSTER_ART_URI, message.getString(PROGRAM_IMAGE));
         } else {
             final boolean defaultPosterArtEnabled = mSharedPreferences.getBoolean(
                     Constants.KEY_EPG_DEFAULT_POSTER_ART_ENABLED,
                     mContext.getResources().getBoolean(R.bool.pref_default_epg_default_poster_art_enabled)
             );
             if (defaultPosterArtEnabled) {
-                values.put(TvContract.Programs.COLUMN_POSTER_ART_URI, "android.resource://" + BuildConfig.APPLICATION_ID + "/" + R.drawable.default_event_icon);
+                values.put(TvContractCompat.Programs.COLUMN_POSTER_ART_URI, "android.resource://" + BuildConfig.APPLICATION_ID + "/" + R.drawable.default_event_icon);
             }
         }
 
@@ -872,7 +872,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
                 Log.v(TAG, "Insert event " + eventId + " on channel " + channelId);
             mPendingProgramOps.add(new PendingEventAddUpdate(
                     eventId,
-                    ContentProviderOperation.newInsert(TvContract.Programs.CONTENT_URI)
+                    ContentProviderOperation.newInsert(TvContractCompat.Programs.CONTENT_URI)
                             .withValues(values)
                             .build()
             ));

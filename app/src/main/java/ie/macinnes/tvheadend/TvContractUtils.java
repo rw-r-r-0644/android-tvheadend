@@ -18,14 +18,14 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.media.tv.TvContract;
-import android.media.tv.TvContract.Channels;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
 import androidx.annotation.RequiresApi;
+import androidx.tvprovider.media.tv.TvContractCompat;
+import androidx.tvprovider.media.tv.TvContractCompat.Channels;
 
 public class TvContractUtils {
 
@@ -42,15 +42,15 @@ public class TvContractUtils {
                 "ie.macinnes.tvheadend",
                 ".tvinput.TvInputService");
 
-        return TvContract.buildInputId(componentName);
+        return TvContractCompat.buildInputId(componentName);
     }
 
     public static long getChannelId(Context context, int channelId) {
         ContentResolver resolver = context.getContentResolver();
 
-        Uri channelsUri = TvContract.buildChannelsUriForInput(TvContractUtils.getInputId());
+        Uri channelsUri = TvContractCompat.buildChannelsUriForInput(TvContractUtils.getInputId());
 
-        String[] projection = {TvContract.Channels._ID, TvContract.Channels.COLUMN_ORIGINAL_NETWORK_ID};
+        String[] projection = {TvContractCompat.Channels._ID, TvContractCompat.Channels.COLUMN_ORIGINAL_NETWORK_ID};
 
         try (Cursor cursor = resolver.query(channelsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
@@ -66,9 +66,9 @@ public class TvContractUtils {
     public static String getChannelName(Context context, int channelId) {
         ContentResolver resolver = context.getContentResolver();
 
-        Uri channelsUri = TvContract.buildChannelsUriForInput(TvContractUtils.getInputId());
+        Uri channelsUri = TvContractCompat.buildChannelsUriForInput(TvContractUtils.getInputId());
 
-        String[] projection = {TvContract.Channels.COLUMN_ORIGINAL_NETWORK_ID, TvContract.Channels.COLUMN_DISPLAY_NAME};
+        String[] projection = {TvContractCompat.Channels.COLUMN_ORIGINAL_NETWORK_ID, TvContractCompat.Channels.COLUMN_DISPLAY_NAME};
 
         try (Cursor cursor = resolver.query(channelsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
@@ -85,7 +85,7 @@ public class TvContractUtils {
         long androidChannelId = getChannelId(context, channelId);
 
         if (androidChannelId != INVALID_CHANNEL_ID) {
-            return TvContract.buildChannelUri(androidChannelId);
+            return TvContractCompat.buildChannelUri(androidChannelId);
         }
 
         return null;
@@ -111,14 +111,14 @@ public class TvContractUtils {
 
         // Create a map from original network ID to channel row ID for existing channels.
         SparseArray<Uri> channelMap = new SparseArray<>();
-        Uri channelsUri = TvContract.buildChannelsUriForInput(TvContractUtils.getInputId());
-        String[] projection = {TvContract.Channels._ID, TvContract.Channels.COLUMN_ORIGINAL_NETWORK_ID};
+        Uri channelsUri = TvContractCompat.buildChannelsUriForInput(TvContractUtils.getInputId());
+        String[] projection = {TvContractCompat.Channels._ID, TvContractCompat.Channels.COLUMN_ORIGINAL_NETWORK_ID};
 
         try (Cursor cursor = resolver.query(channelsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 long rowId = cursor.getLong(0);
                 int originalNetworkId = cursor.getInt(1);
-                channelMap.put(originalNetworkId, TvContract.buildChannelUri(rowId));
+                channelMap.put(originalNetworkId, TvContractCompat.buildChannelUri(rowId));
             }
         }
 
@@ -126,7 +126,7 @@ public class TvContractUtils {
     }
 
     public static void removeChannels(Context context) {
-        Uri channelsUri = TvContract.buildChannelsUriForInput(getInputId());
+        Uri channelsUri = TvContractCompat.buildChannelsUriForInput(getInputId());
 
         ContentResolver resolver = context.getContentResolver();
 
@@ -136,7 +136,7 @@ public class TvContractUtils {
             while (cursor != null && cursor.moveToNext()) {
                 long rowId = cursor.getLong(0);
                 Log.d(TAG, "Deleting channel: " + rowId);
-                resolver.delete(TvContract.buildChannelUri(rowId), null, null);
+                resolver.delete(TvContractCompat.buildChannelUri(rowId), null, null);
             }
         }
     }
@@ -152,16 +152,16 @@ public class TvContractUtils {
             return null;
         }
 
-        Uri programsUri = TvContract.buildProgramsUriForChannel(androidChannelId);
+        Uri programsUri = TvContractCompat.buildProgramsUriForChannel(androidChannelId);
 
-        String[] projection = {TvContract.Programs._ID, TvContract.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
+        String[] projection = {TvContractCompat.Programs._ID, TvContractCompat.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
 
         String strEventId = String.valueOf(eventId);
 
         try (Cursor cursor = resolver.query(programsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 if (strEventId.equals(cursor.getString(1))) {
-                    return TvContract.buildProgramUri(cursor.getLong(0));
+                    return TvContractCompat.buildProgramUri(cursor.getLong(0));
                 }
             }
         }
@@ -172,7 +172,7 @@ public class TvContractUtils {
     public static Integer getTvhEventIdFromProgramUri(Context context, Uri programUri) {
         ContentResolver resolver = context.getContentResolver();
 
-        String[] projection = {TvContract.Programs._ID, TvContract.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
+        String[] projection = {TvContractCompat.Programs._ID, TvContractCompat.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
 
         // TODO: Handle when more than 1, or 0 results come back
         try (Cursor cursor = resolver.query(programUri, projection, null, null, null)) {
@@ -190,12 +190,12 @@ public class TvContractUtils {
         // Create a map from event id to program row ID for existing programs.
         SparseArray<Uri> programMap = new SparseArray<>();
 
-        Uri channelsUri = TvContract.buildChannelsUriForInput(TvContractUtils.getInputId());
+        Uri channelsUri = TvContractCompat.buildChannelsUriForInput(TvContractUtils.getInputId());
 
-        String[] channelsProjection = {TvContract.Channels._ID};
+        String[] channelsProjection = {TvContractCompat.Channels._ID};
         try (Cursor cursor = resolver.query(channelsUri, channelsProjection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
-                SparseArray<Uri> channelPrgramMap = buildProgramUriMap(context, TvContract.buildChannelUri(cursor.getLong(0)));
+                SparseArray<Uri> channelPrgramMap = buildProgramUriMap(context, TvContractCompat.buildChannelUri(cursor.getLong(0)));
                 for (int i = 0; i < channelPrgramMap.size(); i++) {
                     int key = channelPrgramMap.keyAt(i);
                     Uri value = channelPrgramMap.valueAt(i);
@@ -213,14 +213,14 @@ public class TvContractUtils {
         // Create a map from event id to program row ID for existing programs.
         SparseArray<Uri> programMap = new SparseArray<>();
 
-        Uri programsUri = TvContract.buildProgramsUriForChannel(channelUri);
-        String[] projection = {TvContract.Programs._ID, TvContract.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
+        Uri programsUri = TvContractCompat.buildProgramsUriForChannel(channelUri);
+        String[] projection = {TvContractCompat.Programs._ID, TvContractCompat.Programs.COLUMN_INTERNAL_PROVIDER_DATA};
 
         try (Cursor cursor = resolver.query(programsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 long rowId = cursor.getLong(0);
                 int tvhEventId = Integer.valueOf(cursor.getString(1));
-                programMap.put(tvhEventId, TvContract.buildChannelUri(rowId));
+                programMap.put(tvhEventId, TvContractCompat.buildChannelUri(rowId));
             }
         }
 
@@ -231,9 +231,9 @@ public class TvContractUtils {
     private static long getRecordedProgramId(Context context, int dvrEntryId) {
         ContentResolver resolver = context.getContentResolver();
 
-        Uri recordedProgramsUri = TvContract.RecordedPrograms.CONTENT_URI;
+        Uri recordedProgramsUri = TvContractCompat.RecordedPrograms.CONTENT_URI;
 
-        String[] projection = {TvContract.RecordedPrograms._ID, TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
+        String[] projection = {TvContractCompat.RecordedPrograms._ID, TvContractCompat.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
 
         try (Cursor cursor = resolver.query(recordedProgramsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
@@ -251,7 +251,7 @@ public class TvContractUtils {
         long androidRecordedProgramId = getRecordedProgramId(context, dvrEntryId);
 
         if (androidRecordedProgramId != INVALID_RECORDED_PROGRAM_ID) {
-            return TvContract.buildRecordedProgramUri(androidRecordedProgramId);
+            return TvContractCompat.buildRecordedProgramUri(androidRecordedProgramId);
         }
 
         return null;
@@ -261,7 +261,7 @@ public class TvContractUtils {
     public static Integer getTvhDvrEntryIdFromRecordedProgramUri(Context context, Uri recordedProgramUri) {
         ContentResolver resolver = context.getContentResolver();
 
-        String[] projection = {TvContract.RecordedPrograms._ID, TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
+        String[] projection = {TvContractCompat.RecordedPrograms._ID, TvContractCompat.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
 
         // TODO: Handle when more than 1, or 0 results come back
         try (Cursor cursor = resolver.query(recordedProgramUri, projection, null, null, null)) {
@@ -280,14 +280,14 @@ public class TvContractUtils {
 
         // Create a map from original network ID to channel row ID for existing channels.
         SparseArray<Uri> recordedProgramMap = new SparseArray<>();
-        Uri recordedProgramsUri = TvContract.RecordedPrograms.CONTENT_URI;
-        String[] projection = {TvContract.RecordedPrograms._ID, TvContract.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
+        Uri recordedProgramsUri = TvContractCompat.RecordedPrograms.CONTENT_URI;
+        String[] projection = {TvContractCompat.RecordedPrograms._ID, TvContractCompat.RecordedPrograms.COLUMN_INTERNAL_PROVIDER_DATA};
 
         try (Cursor cursor = resolver.query(recordedProgramsUri, projection, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 long rowId = cursor.getLong(0);
                 int internalProviderData = cursor.getInt(1);
-                recordedProgramMap.put(internalProviderData, TvContract.buildRecordedProgramUri(rowId));
+                recordedProgramMap.put(internalProviderData, TvContractCompat.buildRecordedProgramUri(rowId));
             }
         }
 
@@ -296,7 +296,7 @@ public class TvContractUtils {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void removeRecordedProgram(Context context) {
-        Uri recordedProgramsUri = TvContract.RecordedPrograms.CONTENT_URI;
+        Uri recordedProgramsUri = TvContractCompat.RecordedPrograms.CONTENT_URI;
 
         ContentResolver resolver = context.getContentResolver();
 
@@ -306,7 +306,7 @@ public class TvContractUtils {
             while (cursor != null && cursor.moveToNext()) {
                 long rowId = cursor.getLong(0);
                 Log.d(TAG, "Deleting recorded program: " + rowId);
-                resolver.delete(TvContract.buildRecordedProgramUri(rowId), null, null);
+                resolver.delete(TvContractCompat.buildRecordedProgramUri(rowId), null, null);
             }
         }
     }

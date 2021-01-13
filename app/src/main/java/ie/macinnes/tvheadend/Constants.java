@@ -15,7 +15,7 @@ under the License.
 package ie.macinnes.tvheadend;
 
 
-import android.media.tv.TvContract;
+import androidx.tvprovider.media.tv.TvContractCompat;
 
 public class Constants {
 
@@ -24,7 +24,7 @@ public class Constants {
     public static final boolean DEBUG = false;
 
     // Misc Things
-    public static final String CONTENT_AUTHORITY = TvContract.AUTHORITY;
+    public static final String CONTENT_AUTHORITY = TvContractCompat.AUTHORITY;
     public static final String ACCOUNT_TYPE = "ie.macinnes.tvheadend";
     public static final int MIGRATE_VERSION = 81;
 
