@@ -28,7 +28,7 @@ public class Constants {
     public static final String ACCOUNT_TYPE = "ie.macinnes.tvheadend";
 
     // Misc Preference Keys and Values
-    public static final String KEY_SETUP_COMPLETE = "SETUP-COMPLETE";
+    public static final String KEY_SETUP_COMPLETE = "setup_complete";
 
     // Audio and Video Preferences Keys and Values
     public static final String KEY_BUFFER_PLAYBACK_MS = "buffer_playback_ms";
@@ -46,17 +46,17 @@ public class Constants {
     public static final String KEY_HTSP_STREAM_PROFILE = "htsp_stream_profile";
 
     // Bundle and Preference Keys
-    public static final String KEY_HOSTNAME = "HOSTNAME";
-    public static final String KEY_HTSP_PORT = "HTSP-PORT";
-    public static final String KEY_USERNAME = "USERNAME";
-    public static final String KEY_PASSWORD = "PASSWORD";
-    public static final String KEY_ERROR_MESSAGE = "ERROR-MESSAGE";
+    public static final String KEY_HOSTNAME = "hostname";
+    public static final String KEY_HTSP_PORT = "htsp_port";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_ERROR_MESSAGE = "error_message";
 
     // Session Selection Preference Keys and Values
     public static final String KEY_EPG_SYNC_ENABLED = "epg_sync_enabled";
     public static final String KEY_EPG_MAX_TIME = "epg_max_time";
     public static final String KEY_EPG_LAST_UPDATE_ENABLED = "epg_last_update_enabled";
-    public static final String KEY_EPG_LAST_UPDATE = "EPG_LAST_UPDATE"; // Todo: This name is confusing...
+    public static final String KEY_EPG_LAST_UPDATE = "epg_last_update"; // Todo: This name is confusing...
     public static final String KEY_EPG_DEFAULT_POSTER_ART_ENABLED = "epg_default_poster_art_enabled";
 
     private Constants() {
