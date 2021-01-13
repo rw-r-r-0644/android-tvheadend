@@ -15,7 +15,7 @@ under the License.
 package ie.macinnes.tvheadend.account;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +25,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.leanback.app.GuidedStepFragment;
+import androidx.leanback.app.GuidedStepSupportFragment;
 import androidx.leanback.widget.GuidanceStylist;
 import androidx.leanback.widget.GuidedAction;
 import androidx.leanback.widget.GuidedActionsStylist;
@@ -39,35 +41,68 @@ import ie.macinnes.tvheadend.BuildConfig;
 import ie.macinnes.tvheadend.Constants;
 import ie.macinnes.tvheadend.R;
 
-public class AuthenticatorActivity extends AccountAuthenticatorActivity {
+public class AuthenticatorActivity extends FragmentActivity {
 
     private static final String TAG = AuthenticatorActivity.class.getName();
+
+    private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
+    private Bundle mResultBundle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GuidedStepFragment fragment = new ServerFragment();
+        mAccountAuthenticatorResponse = getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+
+        if (mAccountAuthenticatorResponse != null) {
+            mAccountAuthenticatorResponse.onRequestContinued();
+        }
+
+        GuidedStepSupportFragment fragment = new ServerFragment();
         fragment.setArguments(getIntent().getExtras());
-        GuidedStepFragment.addAsRoot(this, fragment, android.R.id.content);
+        GuidedStepSupportFragment.addAsRoot(this, fragment, android.R.id.content);
     }
 
     @Override
     public void onBackPressed() {
-        if (GuidedStepFragment.getCurrentGuidedStepFragment(getFragmentManager())
-                instanceof CompletedFragment) {
+        GuidedStepSupportFragment fragment = GuidedStepSupportFragment.getCurrentGuidedStepSupportFragment(getSupportFragmentManager());
+        
+        if (fragment instanceof CompletedFragment || fragment instanceof FailedFragment) {
             finish();
-
-        } else if (GuidedStepFragment.getCurrentGuidedStepFragment(getFragmentManager())
-                instanceof FailedFragment) {
-            finish();
-
         } else {
             super.onBackPressed();
         }
     }
 
-    public static abstract class BaseGuidedStepFragment extends GuidedStepFragment {
+    /**
+     * Set the result that is to be sent as the result of the request that caused this
+     * Activity to be launched. If result is null or this method is never called then
+     * the request will be canceled.
+     *
+     * @param result this is returned as the result of the AbstractAccountAuthenticator request
+     */
+    public final void setAccountAuthenticatorResult(Bundle result) {
+        mResultBundle = result;
+    }
+
+    /**
+     * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
+     */
+    @Override
+    public void finish() {
+        if (mAccountAuthenticatorResponse != null) {
+            // send the result bundle back if set, otherwise send an error.
+            if (mResultBundle != null) {
+                mAccountAuthenticatorResponse.onResult(mResultBundle);
+            } else {
+                mAccountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,"canceled");
+            }
+            mAccountAuthenticatorResponse = null;
+        }
+        super.finish();
+    }
+
+    public static abstract class BaseGuidedStepFragment extends GuidedStepSupportFragment {
         AccountManager mAccountManager;
 
         @Override
@@ -158,7 +193,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 args.putString(Constants.KEY_HTSP_PORT, htspPortAction.getDescription().toString());
 
                 // Move to the next setup
-                GuidedStepFragment fragment = new AccountFragment();
+                GuidedStepSupportFragment fragment = new AccountFragment();
                 fragment.setArguments(args);
                 add(getFragmentManager(), fragment);
             }
@@ -240,7 +275,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 args.putString(Constants.KEY_PASSWORD, passwordAction.getDescription().toString());
 
                 // Move to the next step
-                GuidedStepFragment fragment = new ValidateHTSPAccountFragment();
+                GuidedStepSupportFragment fragment = new ValidateHTSPAccountFragment();
                 fragment.setArguments(args);
                 add(getFragmentManager(), fragment);
             }
@@ -344,7 +379,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 args.putString(Constants.KEY_ERROR_MESSAGE, getString(R.string.setup_htsp_failed));
 
                 // Move to the failed step
-                GuidedStepFragment fragment = new FailedFragment();
+                GuidedStepSupportFragment fragment = new FailedFragment();
                 fragment.setArguments(args);
                 add(getFragmentManager(), fragment);
             }
@@ -370,7 +405,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 activity.setAccountAuthenticatorResult(userdata);
 
                 // Move to the CompletedFragment
-                GuidedStepFragment fragment = new CompletedFragment();
+                GuidedStepSupportFragment fragment = new CompletedFragment();
                 fragment.setArguments(getArguments());
                 add(getFragmentManager(), fragment);
             } else if (state == Authenticator.State.FAILED) {
@@ -380,7 +415,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 args.putString(Constants.KEY_ERROR_MESSAGE, getString(R.string.setup_failed_htsp));
 
                 // Move to the failed step
-                GuidedStepFragment fragment = new FailedFragment();
+                GuidedStepSupportFragment fragment = new FailedFragment();
                 fragment.setArguments(args);
                 add(getFragmentManager(), fragment);
             }
