@@ -12,7 +12,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations
 under the License.
 */
-package ie.macinnes.tvheadend.tvinput;
+package ie.macinnes.tvheadend.tv;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.tv.TvInputInfo;
 import android.media.tv.TvInputManager;
+import android.media.tv.TvInputService;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -39,9 +40,9 @@ import ie.macinnes.tvheadend.account.AccountUtils;
 import ie.macinnes.tvheadend.sync.EpgSyncService;
 
 
-public class TvInputService extends android.media.tv.TvInputService {
+public class TvheadendTvInputService extends TvInputService {
 
-    private static final String TAG = TvInputService.class.getName();
+    private static final String TAG = TvheadendTvInputService.class.getName();
 
     private SimpleHtspConnection mConnection;
 
@@ -56,10 +57,10 @@ public class TvInputService extends android.media.tv.TvInputService {
         mAccount = AccountUtils.getActiveAccount(this);
 
         openConnection();
-        maybeEnableDvr();
+        configureDvr();
 
         // Start the EPG Sync Service
-        getApplicationContext().startService(new Intent(getApplicationContext(), EpgSyncService.class));
+        startService(new Intent(getApplicationContext(), EpgSyncService.class));
     }
 
     @Override
@@ -74,7 +75,7 @@ public class TvInputService extends android.media.tv.TvInputService {
     public Session onCreateSession(String inputId) {
         Log.d(TAG, "Creating new TvInputService HtspSession for input ID: " + inputId + ".");
 
-        return new HtspSession(this, mConnection);
+        return new TvheadendSession(this, mConnection);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -83,10 +84,10 @@ public class TvInputService extends android.media.tv.TvInputService {
     public RecordingSession onCreateRecordingSession(String inputId) {
         Log.d(TAG, "Creating new TvInputService HtspRecordingSession for input ID: " + inputId + ".");
 
-        return new HtspRecordingSession(this, mConnection);
+        return new TvheadendRecordingSession(this, mConnection);
     }
 
-    private void maybeEnableDvr() {
+    private void configureDvr() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean dvrEnabled = sharedPreferences.getBoolean(
                 Constants.KEY_DVR_ENABLED,
@@ -104,7 +105,7 @@ public class TvInputService extends android.media.tv.TvInputService {
             }
 
             TvInputManager tim = (TvInputManager) getSystemService(Context.TV_INPUT_SERVICE);
-            ComponentName componentName = new ComponentName(this, TvInputService.class);
+            ComponentName componentName = new ComponentName(this, TvheadendTvInputService.class);
             TvInputInfo tvInputInfo = new TvInputInfo.Builder(this, componentName)
                     .setCanRecord(true)
                     .setTunerCount(tuners)

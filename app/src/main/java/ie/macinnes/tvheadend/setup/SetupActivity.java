@@ -48,9 +48,9 @@ import ie.macinnes.tvheadend.settings.SettingsActivity;
 import ie.macinnes.tvheadend.sync.EpgSyncService;
 import ie.macinnes.tvheadend.sync.EpgSyncTask;
 
-public class TvInputSetupActivity extends FragmentActivity {
+public class SetupActivity extends FragmentActivity {
 
-    private static final String TAG = TvInputSetupActivity.class.getName();
+    private static final String TAG = SetupActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

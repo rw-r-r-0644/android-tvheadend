@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package ie.macinnes.tvheadend.tvinput;
+package ie.macinnes.tvheadend.tv;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.PlaybackParams;
 import android.media.tv.TvInputManager;
+import android.media.tv.TvInputService;
 import android.media.tv.TvTrackInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -46,10 +47,9 @@ import ie.macinnes.tvheadend.R;
 import ie.macinnes.tvheadend.TvContractUtils;
 import ie.macinnes.tvheadend.player.TvheadendPlayer;
 
-// TODO: Rename?
-public class HtspSession extends TvInputService.Session implements TvheadendPlayer.Listener {
+class TvheadendSession extends TvInputService.Session implements TvheadendPlayer.Listener {
 
-    private static final String TAG = HtspSession.class.getName();
+    private static final String TAG = TvheadendSession.class.getName();
 
     private static final AtomicInteger sSessionCounter = new AtomicInteger();
 
@@ -62,7 +62,7 @@ public class HtspSession extends TvInputService.Session implements TvheadendPlay
 
     private Runnable mPlayChannelRunnable;
 
-    public HtspSession(Context context, SimpleHtspConnection connection) {
+    public TvheadendSession(Context context, SimpleHtspConnection connection) {
         super(context);
 
         mContext = context;

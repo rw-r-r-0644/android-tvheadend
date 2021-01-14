@@ -29,7 +29,7 @@ import org.acra.ACRA;
 import ie.macinnes.tvheadend.account.AccountUtils;
 import ie.macinnes.tvheadend.settings.SettingsActivity;
 import ie.macinnes.tvheadend.sync.EpgSyncService;
-import ie.macinnes.tvheadend.tvinput.TvInputService;
+import ie.macinnes.tvheadend.tv.TvheadendTvInputService;
 
 public class DevTestActivity extends Activity {
 
@@ -111,7 +111,7 @@ public class DevTestActivity extends Activity {
         Intent i = new Intent(context, EpgSyncService.class);
         context.stopService(i);
 
-        i = new Intent(context, TvInputService.class);
+        i = new Intent(context, TvheadendTvInputService.class);
         context.stopService(i);
 
         TvContractUtils.removeChannels(getBaseContext());
@@ -125,7 +125,7 @@ public class DevTestActivity extends Activity {
         Intent i = new Intent(context, EpgSyncService.class);
         context.stopService(i);
 
-        i = new Intent(context, TvInputService.class);
+        i = new Intent(context, TvheadendTvInputService.class);
         context.stopService(i);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -147,7 +147,7 @@ public class DevTestActivity extends Activity {
 
     public void restartTvInputService(View view) {
         Context context = getBaseContext();
-        Intent i = new Intent(context, TvInputService.class);
+        Intent i = new Intent(context, TvheadendTvInputService.class);
         context.stopService(i);
         context.startService(i);
     }

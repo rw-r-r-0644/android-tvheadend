@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package ie.macinnes.tvheadend.tvinput;
+package ie.macinnes.tvheadend.tv;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.media.tv.TvInputManager;
 import android.media.tv.TvInputService;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -34,14 +32,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ie.macinnes.htsp.HtspMessage;
 import ie.macinnes.htsp.HtspNotConnectedException;
 import ie.macinnes.htsp.SimpleHtspConnection;
-import ie.macinnes.tvheadend.Constants;
 import ie.macinnes.tvheadend.TvContractUtils;
 
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-class HtspRecordingSession extends TvInputService.RecordingSession {
+class TvheadendRecordingSession extends TvInputService.RecordingSession {
 
-    private static final String TAG = HtspRecordingSession.class.getName();
+    private static final String TAG = TvheadendRecordingSession.class.getName();
     private static final int INVALID_DVR_ENTRY_ID = -1;
 
     private static final AtomicInteger sSessionCounter = new AtomicInteger();
@@ -55,7 +52,7 @@ class HtspRecordingSession extends TvInputService.RecordingSession {
     private Uri mProgramUri;
     private int mDvrEntryId = INVALID_DVR_ENTRY_ID;
 
-    public HtspRecordingSession(Context context, SimpleHtspConnection connection) {
+    public TvheadendRecordingSession(Context context, SimpleHtspConnection connection) {
         super(context);
 
         mContext = context;

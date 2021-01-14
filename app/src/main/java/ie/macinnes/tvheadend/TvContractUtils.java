@@ -40,7 +40,7 @@ public class TvContractUtils {
     public static String getInputId() {
         ComponentName componentName = new ComponentName(
                 "ie.macinnes.tvheadend",
-                ".tvinput.TvInputService");
+                ".tv.TvheadendTvInputService");
 
         return TvContractCompat.buildInputId(componentName);
     }
