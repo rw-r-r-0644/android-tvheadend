@@ -119,7 +119,7 @@ class TvheadendRenderersFactory extends DefaultRenderersFactory {
 
         super.buildAudioRenderers(
                 context,
-                enableFfmpegAudioRenderer ? EXTENSION_RENDERER_MODE_ON : EXTENSION_RENDERER_MODE_OFF,
+                enableFfmpegAudioRenderer ? EXTENSION_RENDERER_MODE_PREFER : EXTENSION_RENDERER_MODE_OFF,
                 mediaCodecSelector,
                 drmSessionManager,
                 playClearSamplesWithoutKeys,
