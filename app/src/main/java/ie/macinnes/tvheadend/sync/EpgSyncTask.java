@@ -583,21 +583,21 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
         // Live Channels app EPG Grid. COLUMN_LONG_DESCRIPTION appears unused.
         // On Sony TVs, COLUMN_LONG_DESCRIPTION is used for the "more info" display.
 
-        if (message.containsKey(PROGRAM_TITLE_KEY)) {
+        if (message.containsKey(DVR_ENTRY_TITLE_KEY)) {
             // The title of this TV program.
             values.put(TvContractCompat.RecordedPrograms.COLUMN_TITLE, message.getString(DVR_ENTRY_TITLE_KEY));
         }
 
-        if (message.containsKey(PROGRAM_EPISODE_TITLE_KEY)) {
+        if (message.containsKey(DVR_ENTRY_SUBTITLE_KEY)) {
             // The episode title of this TV program for episodic TV shows.
             values.put(TvContractCompat.RecordedPrograms.COLUMN_EPISODE_TITLE, message.getString(DVR_ENTRY_SUBTITLE_KEY));
         }
 
-        if (message.containsKey(PROGRAM_START_TIME_KEY)) {
+        if (message.containsKey(DVR_ENTRY_START_KEY)) {
             values.put(TvContractCompat.RecordedPrograms.COLUMN_START_TIME_UTC_MILLIS, message.getLong(DVR_ENTRY_START_KEY) * 1000);
         }
 
-        if (message.containsKey(PROGRAM_FINISH_TIME_KEY)) {
+        if (message.containsKey(DVR_ENTRY_STOP_KEY)) {
             values.put(TvContractCompat.RecordedPrograms.COLUMN_END_TIME_UTC_MILLIS, message.getLong(DVR_ENTRY_STOP_KEY) * 1000);
         }
 
@@ -628,7 +628,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             }
         }
 
-        if (message.containsKey(PROGRAM_CONTENT_TYPE_KEY)) {
+        if (message.containsKey(DVR_ENTRY_CONTENT_TYPE_KEY)) {
             values.put(TvContractCompat.RecordedPrograms.COLUMN_CANONICAL_GENRE,
                     DvbMappings.PROGRAM_GENRE.get(message.getInteger(DVR_ENTRY_CONTENT_TYPE_KEY)));
         }
