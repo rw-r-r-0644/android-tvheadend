@@ -88,7 +88,6 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     private static final String CHANNEL_ICON_KEY = "channelIcon";
 
     private static final String PROGRAM_DESCRIPTION_KEY = "description";
-    private static final String PROGRAM_SUMMARY_KEY = "summary";
     private static final String PROGRAM_TITLE_KEY = "title";
     private static final String PROGRAM_SUBTITLE_KEY = "subtitle";
     private static final String PROGRAM_CONTENT_TYPE_KEY = "contentType";
@@ -775,18 +774,10 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             values.put(TvContractCompat.Programs.COLUMN_TITLE, message.getString(PROGRAM_TITLE_KEY));
         }
 
-        if (message.containsKey(PROGRAM_SUMMARY_KEY) && message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
-            // If we have both summary and description... use them both
-            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
-            values.put(TvContractCompat.Programs.COLUMN_LONG_DESCRIPTION, message.getString(PROGRAM_DESCRIPTION_KEY));
-
-        } else if (message.containsKey(PROGRAM_SUMMARY_KEY) && !message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
-            // If we have only summary, use it.
-            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
-
-        } else if (!message.containsKey(PROGRAM_SUMMARY_KEY) && message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
-            // If we have only description, use it.
-            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_DESCRIPTION_KEY));
+        if (message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
+            String description = message.getString(PROGRAM_DESCRIPTION_KEY);
+            values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, description);
+            values.put(TvContractCompat.Programs.COLUMN_LONG_DESCRIPTION, description);
         }
 
         if (message.containsKey(PROGRAM_CONTENT_TYPE_KEY)) {
