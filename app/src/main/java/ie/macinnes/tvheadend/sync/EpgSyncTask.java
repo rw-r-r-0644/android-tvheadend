@@ -90,7 +90,7 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
     private static final String PROGRAM_DESCRIPTION_KEY = "description";
     private static final String PROGRAM_SUMMARY_KEY = "summary";
     private static final String PROGRAM_TITLE_KEY = "title";
-    private static final String PROGRAM_EPISODE_TITLE_KEY = "subtitle";
+    private static final String PROGRAM_SUBTITLE_KEY = "subtitle";
     private static final String PROGRAM_CONTENT_TYPE_KEY = "contentType";
     private static final String PROGRAM_AGE_RATING_KEY = "ageRating";
     private static final String PROGRAM_START_TIME_KEY = "start";
@@ -775,11 +775,6 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
             values.put(TvContractCompat.Programs.COLUMN_TITLE, message.getString(PROGRAM_TITLE_KEY));
         }
 
-        if (message.containsKey(PROGRAM_EPISODE_TITLE_KEY)) {
-            // The episode title of this TV program for episodic TV shows.
-            values.put(TvContractCompat.Programs.COLUMN_EPISODE_TITLE, message.getString(PROGRAM_EPISODE_TITLE_KEY));
-        }
-
         if (message.containsKey(PROGRAM_SUMMARY_KEY) && message.containsKey(PROGRAM_DESCRIPTION_KEY)) {
             // If we have both summary and description... use them both
             values.put(TvContractCompat.Programs.COLUMN_SHORT_DESCRIPTION, message.getString(PROGRAM_SUMMARY_KEY));
@@ -813,6 +808,11 @@ public class EpgSyncTask implements HtspMessage.Listener, Authenticator.Listener
 
         if (message.containsKey(PROGRAM_FINISH_TIME_KEY)) {
             values.put(TvContractCompat.Programs.COLUMN_END_TIME_UTC_MILLIS, message.getLong(PROGRAM_FINISH_TIME_KEY) * 1000);
+        }
+
+        if (message.containsKey(PROGRAM_EPISODE_NUMBER_KEY) && message.containsKey(PROGRAM_SUBTITLE_KEY)) {
+            // The episode title of this TV program for episodic TV shows.
+            values.put(TvContractCompat.Programs.COLUMN_EPISODE_TITLE, message.getString(PROGRAM_SUBTITLE_KEY));
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
